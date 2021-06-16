@@ -1,0 +1,30 @@
+<div class="col-lg-12 col-md-12 col-sm-12 col-12">
+    <div class="product-details-img product-horizontal-style">
+        <div class="product-buttons">
+            <a href="#" class="btn prlightbox" title="Увеличить">
+                <i class="icon anm anm-expand-l-arrows" aria-hidden="true"></i>
+                <span class="tooltip-label">Увеличить</span>
+            </a>
+        </div>
+        <div class="product-center-style3">
+            <div class="zoompro-span">
+                <img class="prlightbox" data-zoom-image="{{ product.img1.url }}" src="{{ product.img1.url }}" alt="{{ product.category.name_for_product }} / {{ product.brand }}">
+            </div>
+            <div class="zoompro-span">
+                <img class="prlightbox" data-zoom-image="{{ product.img2.url }}" src="{{ product.img2.url }}" alt="{{ product.category.name_for_product }} / {{ product.brand }}" />
+            </div>
+            {% for image in product_gallery %}
+            <div class="zoompro-span">
+                <img class="prlightbox" data-zoom-image="{{ image.image.url }}" src="{{ image.image.url }}" alt="{{ product.category.name_for_product }} / {{ product.brand }}" />
+            </div>
+            {% endfor %}
+        </div>
+        <div class="lightboximages">
+            <a href="{{ product.img1.url }}" data-size="1000x1280"></a>
+            <a href="{{ product.img2.url }}" data-size="1000x1280"></a>
+            {% for image in product_gallery %}
+            <a href="{{ image.image.url }}" data-size="1000x1280"></a>
+            {% endfor %}
+        </div>
+    </div>
+</div>

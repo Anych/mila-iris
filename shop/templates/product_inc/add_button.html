@@ -1,0 +1,51 @@
+<form method="POST" action="{% url 'add_cart' product_id=product.id quantity=1 %}" class="product-form product-form-product-template hidedropdown mt-3">
+    {% csrf_token %}
+    {% if product.another_color.all %}
+        <div class="col-12 col-sm-12 col-md-6 col-lg-6">
+            <div class="swatch clearfix swatch-1 option2">
+                <label class="label">Цвета:<span class="required">*</span></label>
+                <select name="color" onchange="window.location.href=this.options[this.selectedIndex].value">
+                    <option value="{{ product.color }}" disabled selected>{{ product.color | capfirst }}</option>
+                    {% for color in product.another_color.all %}
+                        {% if color.get_absolute_url in request.path %}
+                        {% else %}
+                    <option value="{{ color.get_absolute_url }}">{{ color.color | capfirst }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    <div class="col-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="swatch clearfix swatch-1 option2">
+            <label class="label">Размеры:<span class="required">*</span></label>
+            <select name="size" required>
+                <option value="" disabled selected>Выберите размер</option>
+                {% for size in sizes %}
+                    <option value="{{ size }}">{{ size }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    {% else %}
+    <div class="container">
+        <div class="swatch clearfix swatch-1 option2">
+            <label class="label">Размеры:<span class="required">*</span></label>
+            <select name="size" required>
+                <option value="" disabled selected>Выберите размер</option>
+                {% for size in sizes %}
+                <option value="{{ size }}">{{ size }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    {% endif %}
+    <!-- Product Action -->
+    <div class="product-action clearfix">
+        <div class="product-form__item--submit">
+            <button type="submit" name="add" class="btn btn-main">
+                <span>В корзину</span>
+            </button>
+        </div>
+    </div>
+    <!-- End Product Action -->
+</form>

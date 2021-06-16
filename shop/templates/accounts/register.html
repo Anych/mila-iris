@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% load static recaptcha3 socialaccount %}
+
+{% block style %}	<link rel="stylesheet" href="{% static 'assets/css/bootstrap-social.css' %}">
+					{% recaptcha_init %}
+					{% recaptcha_ready action_name='homepage' %}
+{% endblock style %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+<div id="page-content">
+    <!--Body Container-->
+    <!--Breadcrumbs-->
+    <div class="breadcrumbs-wrapper">
+        <div class="container">
+            <div class="breadcrumbs"><a href="{% url 'home' %}" title="Вернуться на главную">Главная</a> <span aria-hidden="true">|</span> <span>Регистрация</span></div>
+        </div>
+    </div>
+    <!--End Breadcrumbs-->
+    <!--Page Title with Image-->
+	<div class="card mx-auto" style="max-width:520px; margin-top:40px;">
+		<div class="card-body">
+		{% include 'inc/alerts.html' %}
+			<h5 class="text-danger text-center">{{ form.email.errors }}</h5>
+		<h5 class="text-danger text-center">{{ form.non_field_errors }}</h5>
+		<h4 class="card-title mb-4 text-center">Регистрация</h4>
+		<form action="{% url 'register' %}" method="POST" class="contact-form">
+			{% csrf_token %}
+
+			<div class="form-row">
+				<div class="col form-group">
+					<label>Имя</label>
+					{{ form.first_name }}
+				</div> <!-- form-group end.// -->
+				<div class="col form-group">
+					<label>Фамилия</label>
+					{{ form.last_name }}
+				</div> <!-- form-group end.// -->
+			</div> <!-- form-row end.// -->
+
+				<div class="form-row">
+					<div class="form-group col-md-6">
+					  <label>E-mail</label>
+					  {{ form.email }}
+					</div> <!-- form-group end.// -->
+					<div class="form-group col-md-6">
+					  <label>Телефон</label>
+					  {{ form.phone_number }}
+					</div> <!-- form-group end.// -->
+				</div> <!-- form-row.// -->
+				<div class="form-row">
+					<div class="form-group col-md-6">
+						<label>Пароль</label>
+					    {{ form.password }}
+					</div> <!-- form-group end.// -->
+					<div class="form-group col-md-6">
+						<label>Повторите пароль</label>
+						{{ form.confirm_password }}
+					</div> <!-- form-group end.// -->
+				</div>
+				<div class="form-group">
+					{{ form.captcha }}
+					<div class="text-center"><button type="submit" class="btn" data-action='submit'> Зарегистрироваться </button></div>
+				</div> <!-- form-group// -->
+                <div class="text-center mb-3">
+                    <span>Или зайти через</span>
+                </div>
+                    <div class="row pl-20 pr-20 mb-3">
+                        <div class="col-6 pr-1">
+                            <a href="{% provider_login_url 'facebook' method='oauth2' %}" class="btn btn-block btn-social btn-facebook">
+                                <span class="fa fa-facebook"></span>Facebook
+                            </a>
+                        </div>
+                        <div class="col-6 pl-1">
+                            <a href="{% provider_login_url 'google' %}" class="btn btn-block btn-social btn-google">
+                                <span class="fa fa-google"></span>Google
+                            </a>
+                        </div>
+                    </div>
+			</form>
+		</div><!-- card-body.// -->
+    </div> <!-- card .// -->
+    <p class="text-center mt-4">Есть аккаунт? <a href="{% url 'login' %}" class="text-info">Войти</a></p>
+    <br><br>
+</div><!--End Page Wrapper-->
+{% endblock content %}

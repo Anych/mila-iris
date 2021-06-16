@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+
+{% block title %}Корзина. Магазин Mila&Iris{% endblock %}
+{% block content %}
+<div id="page-content">
+
+    <!--Breadcrumbs-->
+    <div class="breadcrumbs-wrapper">
+        <div class="container">
+            <div class="breadcrumbs"><a href="{% url 'home' %}" title="Back to the home page">Главная</a>
+                <span aria-hidden="true">|</span> <span>Корзина</span></div>
+        </div>
+    </div>
+    <!--End Breadcrumbs-->
+
+    <!--Body Container-->
+    <div class="container">
+        {% if not cart_items %}
+        <h3 class="text-center">Ваша корзина пуста</h3>
+        <br><br>
+        <div class="text-center">
+            <a href="{% url 'store' %}" class="btn btn-medium">Продолжить покупки</a>
+        </div>
+        {% else %}
+        <div class="page-title"><h1>Корзина</h1></div>
+        <div class="row">
+            <!--Main Content-->
+            {% include 'inc/alerts.html' %}
+            <div class="col-12 col-sm-12 col-md-8 col-lg-8 main-col">
+                <div class="cart style2">
+                    <table>
+                        <thead class="cart__row cart__header">
+                            <tr>
+                                <th colspan="2" class="text-center">Название</th>
+                                <th class="text-center">Цена</th>
+                                <th class="text-center">Колличество</th>
+                                <th class="text-right">Сумма</th>
+                                <th class="action">&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cart_item in cart_items %}
+                            <tr class="cart__row border-bottom line1 cart-flex border-top">
+                                <td class="cart__image-wrapper cart-flex-item">
+                                    <a href="{{ cart_item.product.get_absolute_url }}"><img class="cart__image" src="{{ cart_item.product.img1.url }}" alt="{{ cart_item.product.name }}"></a>
+                                </td>
+                                <td class="cart__meta small--text-left cart-flex-item">
+                                    <div class="list-view-item__title">
+                                        <a href="{{ cart_item.product.get_absolute_url }}">{{ cart_item.product.category.name_for_product }}: {{ cart_item.product.brand }}{% if product.name_of_model %} - {{ product.name_of_model }}{% endif %}.
+                                            <p>{{ cart_item.product.color }}</p></a>
+                                    </div>
+                                    <div class="cart__meta-text">
+                                        Размер: {{ cart_item.size }}
+                                    </div>
+                                </td>
+                                <td class="cart__price-wrapper cart-flex-item">
+                                    <span class="money">&#8376; {{ cart_item.product.price | intcomma }}</span>
+                                </td>
+                                <td class="cart__update-wrapper cart-flex-item text-right">
+                                    <div class="cart__qty text-center" style="display:inline-block;">
+                                        <div class="qtyField">
+                                            <a class="qtyBtn minus" href="{% url 'remove_cart' cart_item.product.id cart_item.id %}"><i class="icon icon-minus"></i></a>
+                                            <input class="cart__qty-input qty" type="text" name="updates[]" id="qty" value="{{ cart_item.quantity }}" pattern="[0-9]*">
+                                            <div style="display:inline-block;">
+                                            <form action="{% url 'add_cart' cart_item.product.id cart_item.quantity %}" method="POST">
+                                            {% csrf_token %}
+                                                <input type="hidden" name="size" value="{{ cart_item.size }}">
+                                                <button class="qtyBtn plus" type="submit"><i class="icon icon-plus"></i> </button>
+                                            </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-right small--hide cart-price">
+                                    <div><span class="money">&#8376; {{ cart_item.sub_total | intcomma }}</span></div>
+                                </td>
+                                <td class="text-center small--hide"><a href="{% url 'remove_cart_item' cart_item.product.id cart_item.id %}" class="btn btn--secondary cart__remove" title="Удалить"><i class="icon icon anm anm-times-l"></i></a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-left"><a href="{% url 'store' %}" class="btn--link cart-continue"><i class="icon icon-arrow-circle-left"></i> Продолжить покупки</a></td>
+                            </tr>
+                        </tfoot>
+                </table>
+                <hr>
+                </div>
+            </div>
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 cart__footer">
+                <div class="solid-border">
+                  <div class="row">
+                    <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Итого</strong></span><br><br>
+                    <span class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right"><span class="money">&#8376; {{ total | intcomma }}</span></span>
+                  </div>
+                <div class="cart__shipping">Общая сумма будет доступна при расчёте</div>
+                <div class="order-button-payment" >
+                    <a href="{% url 'checkout' %}"><button class="btn" value="Place order" type="submit">Оформление заказа</button></a>
+                </div>
+                  <div class="paymnet-img"><img src="{% static 'assets/images/payment-img.jpg' %}" alt="Payment"></div>
+                </div>
+
+            </div>
+            <!--End Main Content-->
+        </div>
+    {% endif %}
+    </div><!--End Body Container-->
+
+</div><!--End Page Wrapper-->
+{% endblock content %}

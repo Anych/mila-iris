@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div id="page-content">
+    <!--Body Container-->
+    <div class="container">
+        <!--Hero Banner-->
+        <div class="section no-pt-section no-pb-section hero-section">
+            <div class="hero hero--large hero__overlay bg-size">
+                <img class="bg-img" src="{% static 'assets/images/slideshow-banner/dome4-banner1.jpg' %}" alt="Одежда из Италии">
+                <div class="hero__inner">
+                    <div class="wrap-text center">
+                        <h2 class="mega-title">ЕСТЕСТВЕННЫЙ СТИЛЬ</h2>
+                        <div class="mega-subtitle"><p>Модная Итальянская одежда. По самым выгодным ценам. Изысканные модели. Стоящие Вашего внимания.</p></div>
+                        <a href="{% url 'store' %}" class="btn btn-main">СМОТРЕТЬ</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--End Hero Banner-->
+
+        <!-- Banner Masonary-->
+        <div class="imgBanners style2 mb-5">
+            <div class="grid-masonary banner-grid">
+                <div class="grid-sizer col-12 col-sm-6 col-md-6 col-lg-6"></div>
+                    <div class="row">
+                        <div class="col-12 col-sm-6 col-md-6 col-lg-6 banner-item">
+                            <div class="imgBanner-grid-item">
+                                <div class="img">
+                                    <a href="{% url 'sales' %}">
+                                        <img class="blur-up lazyload" data-src="{% static 'assets/images/demo4-collection-bnr1.jpg' %}" src="{% static 'assets/images/demo4-collection-bnr1.jpg' %}" alt="Товары со скидкой" title="Скидки" />
+                                    </a>
+                                    <div class="details center w-50">
+                                        <div class="inner">
+                                            <h3 class="title">Товары со скидкой</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-sm-6 col-md-6 col-lg-6 banner-item">
+                            <div class="imgBanner-grid-item">
+                                <div class="img">
+                                    <a href="#">
+                                        <img class="blur-up lazyload" data-src="{% static 'assets/images/demo4-collection-bnr2.jpg' %}" src="{% static 'assets/images/demo4-collection-bnr2.jpg' %}" alt="Элегантные платья" title="платья">
+                                    </a>
+                                    <div class="details center w-50">
+                                        <div class="inner">
+                                            <h3 class="title">Элегантные платья</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!-- End Banner Masonary-->
+
+    </div><!--End Body Container-->
+</div><!--End Page Wrapper-->
+{% endblock content %}

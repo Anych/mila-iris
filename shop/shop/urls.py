@@ -3,6 +3,11 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+from shop.shop import views
+
+handler404 = views.PageNotFoundView.as_view()
+handler403 = views.PermissionDeniedView.as_view()
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),

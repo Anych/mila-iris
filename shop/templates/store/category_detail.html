@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}{{ category.name }} купить в магазине итальянской одежды MIla&Iris{% endblock %}
+{% load static %}
+
+{% block content %}
+<div id="page-content">
+    <!--Body Container-->
+
+    {% include 'category_inc/breadcrumbs.html' %}
+    <div class="container">
+        <div class="row">
+            <!--Sidebar-->
+            <div class="col-12 col-sm-12 col-md-3 col-lg-3 sidebar filterbar">
+                <div class="closeFilter d-block d-md-none d-lg-none"><i class="icon icon anm anm-times-l"></i></div>
+                <div class="sidebar_tags">
+
+                    {% include 'category_inc/sidebar.html' %}
+
+                    {% include 'category_inc/popular_products.html' %}
+
+                    <!--Banner-->
+                    <div class="sidebar_widget static-banner">
+                        <a href="#"><img src="{% static 'assets/images/collection-side-banner.png' %}" alt=""></a>
+                    </div>
+                    <!--Banner-->
+
+                </div>
+            </div>
+            <!--End Sidebar-->
+
+            <!--Main Content-->
+            <div class="col-12 col-sm-12 col-md-9 col-lg-9 main-col">
+                {% include 'inc/alerts.html' %}
+                <div class="category-banner">
+                    <img src="{% static 'assets/images/collection-banner/collection-banner.jpg' %}" data-src="{% static 'assets/images/collection-banner/collection-banner.jpg' %}" alt="">
+                </div>
+                <div class="toolbar">
+                    <div class="filters-toolbar-wrapper">
+                        <div class="row">
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-12 text-center filters-toolbar__item filters-toolbar__item--count d-flex justify-content-center align-items-center">
+                                <span class="filters-toolbar__product-count">Найдено: {{ products_count }}</span>
+                            </div>
+                    {% if 'search' in request.path %}
+                    <div class="container">
+                        <h2 class="text-center mt-2 mb-3">Результаты поиска</h2>
+                    </div>
+                    {% endif %}
+                <!--Product Grid-->
+                {% if products %}
+                    <div class="grid-products grid--view-items">
+                        <div class="row">
+                        {% include 'category_inc/products.html' %}
+                    </div>
+                    <!--End Product Grid-->
+                    <!--Pagination Classic-->
+                    <hr class="clear">
+                    </div>
+                    {% include 'category_inc/pagination.html' %}
+                    <!--End Pagination Classic-->
+                    {% else %}
+                        <div class="container">
+                            <h3 class="text-center mt-2">Товары не найдены. Попробуйте позже.</h3>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <!--End Toolbar-->
+
+        </div>
+        <!--End Main Content-->
+        </div>
+
+    </div><!--End Body Container-->
+
+</div><!--End Page Wrapper-->
+{% endblock content %}

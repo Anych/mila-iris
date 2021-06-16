@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="no-js" lang="ru">
+
+<head>
+
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  <title>{% block title %} Магазин Итальянской одежды MIla&Iris{% endblock %}</title>
+
+  <meta name="description" content="description">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="{% static 'assets/images/favicon.ico' %}">
+
+  <!-- Plugins CSS -->
+  <link rel="stylesheet" href="{% static 'assets/css/plugins.css' %}">
+
+  <!-- Main Style CSS -->
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/responsive.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/custom.css' %}">
+  {% block style %}{% endblock %}
+
+</head>
+<body {% block body %} class="template-index index-demo4" {% endblock %}>
+<div id="pre-loader">
+    <img src="{% static 'assets/images/loader.gif' %}" alt="Загрузка">
+</div>
+<div class="page-wrapper">
+    {% include 'inc/navbar.html' %}
+    {% block content %}
+
+    {% endblock %}
+
+    <!--Footer-->
+   	<div class="footer footer-10">
+        <div class="container">
+            <div class="footer-top clearfix">
+                <div class="row">
+                    <div class="col-12 col-sm-12 col-md-4 col-lg-4 about-us-col">
+                        <img src="{% static 'assets/images/footer-logo.png' %}" alt="MIla&Iris"/>
+                        <p>Казахстан, г. Алматы, ТРК Forum<br>пр. Сейфуллина, 617, 3 этаж</p>
+                        <p><b>Номер</b>: +7 775 997-39-65</p>
+                        <p><b>Email</b>: <a href="mailto:mila-iris@mila-iris.kz">mila_iris@mila_iris.kz</a></p>
+                    </div>
+                    <div class="col-12 col-sm-12 col-md-4 col-lg-3 footer-links">
+                        <h4 class="h4">Магазин</h4>
+                        <ul>
+                            {% for category in links %}
+                            <li><a href="{{ category.get_absolute_url }}">{{ category.name }}</a></li>
+                            {% endfor %}
+                            <li><a href="{% url 'sales' %}">Скидки</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-12 col-sm-12 col-md-4 col-lg-3 footer-links">
+                        <h4 class="h4">Информация</h4>
+                        <ul>
+                            <li><a href="{% url 'about_us' %}">О нас</a></li>
+                            <li><a href="{% url 'login' %}">Авторизоваться</a></li>
+                            <li><a href="{% url 'dashboard' %}">Мой аккаунт</a></li>
+                            <li><a href="{% url 'privacy' %}">Политика конфиденциальности</a></li>
+                            <li><a href="{% url 'terms' %}">Пользовательское соглашение</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-12 col-sm-12 col-md-3 col-lg-3">
+                        <h4 class="h4">Мы в соцсетях</h4>
+                        <ul class="list--inline social-icons">
+                            <li><a href="https://www.facebook.com/MilaIris-Almaty-101785574731322" target="_blank"><i class="icon icon-facebook"></i> Facebook</a></li>
+                            <li><a href="https://www.instagram.com/milairis_almaty/" target="_blank"><i class="icon icon-instagram"></i> Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer footer-1 fbottom">
+        <div class="container">
+            <div class="footer-bottom clearfix">
+                <ul class="payment-icons list--inline">
+                    <li><i class="anm anm-cc-visa" aria-hidden="true"></i></li>
+                    <li><i class="anm anm-cc-mastercard" aria-hidden="true"></i></li>
+                    <li><i class="anm anm-cc-paypal" aria-hidden="true"></i></li>
+                </ul>
+                <div class="copytext">
+                    &copy; 2021 MIla&Iris
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--End Footer-->
+    <!--Scoll Top-->
+    <span id="site-scroll"><i class="icon anm anm-arw-up"></i></span>
+    <!--End Scoll Top-->
+
+     <!-- Including Jquery -->
+    <script src="{% static 'assets/js/vendor/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'assets/js/vendor/js.cookie.js' %}"></script>
+    <!-- Including Javascript -->
+    <script src="{% static 'assets/js/plugins.js' %}"></script>
+    <script src="{% static 'assets/js/main.js' %}"></script>
+    {% block script %}
+
+    {% endblock %}
+</div>
+</body>
+</html>

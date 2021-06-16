@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load socialaccount %}
+
+{% block style %}<link rel="stylesheet" href="{% static 'assets/css/bootstrap-social.css' %}">{% endblock style %}
+
+{% block title %}Авторизация{% endblock %}
+
+{% block content %}
+<div id="page-content">
+<div class="breadcrumbs-wrapper">
+    <div class="container">
+        <div class="breadcrumbs"><a href="{% url 'home' %}" title="Вернуться на главную">Главная</a> <span aria-hidden="true">|</span> <span>Авторизация</span></div>
+    </div>
+</div>
+    {% if request.GET.command == 'verification' %}
+
+    <div class="container mx-auto alert alert-info text-center" role="alert" style="max-width: 1024px; margin-top:100px;">
+    Спасибо за регистрацию! Письмо с активацией аккаунта отправлено Вам на почту [{{ request.GET.email }}]
+    <br><br>
+    Прошли верификацию? <a href="{% url 'login' %}">Авторизация</a>
+    </div>
+    <br><br>
+    <br><br>
+    {% elif request.GET.command == 'activate' %}
+    <div class="container mx-auto alert alert-info text-center" role="alert" style="max-width: 1024px; margin-top:100px;">
+    Спасибо за верификацию почты! Письмо с активацией аккаунта отправлено Вам на почту [{{ request.GET.email }}]
+    <br><br>
+    <a href="{% url 'confirm_email' %}">Выслать письмо повторно?</a>
+    </div>
+    <br><br>
+    <br><br>
+    {% else %}
+	<div class="card mx-auto" style="max-width: 380px; margin-top:100px;">
+        <div class="card-body">
+            <h4 class="card-title mb-4 text-center">Авторизация</h4>
+            {% include 'inc/alerts.html' %}
+            <!--Main Content-->
+            <form method="POST" action="{% url 'login' %}" class="contact-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Электронная почта <span class="required">*</span></label>
+                    <input type="email" name="email" placeholder="Введите e-mail" required>
+                </div>
+                <div class="form-group">
+                    <label>Пароль <span class="required">*</span></label>
+                    <input type="password" value="" name="password" placeholder="Введите пароль" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block">Войти</button>
+                </div>
+            <div class="text-center mb-3">
+                <span>Или зайти через</span>
+            </div>
+                <div class="row">
+                    <div class="col-6 pr-1">
+                        <a href="{% provider_login_url 'facebook' method='oauth2' %}" class="btn btn-block btn-social btn-facebook">
+                            <span class="fa fa-facebook"></span>Facebook
+                        </a>
+                    </div>
+                    <div class="col-6 pl-1">
+                        <a href="{% provider_login_url 'google' %}" class="btn btn-block btn-social btn-google">
+                            <span class="fa fa-google"></span>Google
+                        </a>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <p class="text-center mt-4">
+                        <a href="{% url 'forgotPassword' %}" class="text-info">Забыли пароль?</a> &nbsp; | &nbsp;
+                        <a href="{% url 'register' %}" class="text-info">Создать аккаунт</a>
+                    </p>
+                </div>
+            </form>
+                </div>
+            </div>
+            <!--End Main Content-->
+        </div>
+<br><br>
+
+    </div><!--End Body Container-->
+
+</div><!--End Page Wrapper-->
+{% endif %}
+{% endblock content %}
