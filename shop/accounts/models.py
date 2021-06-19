@@ -44,10 +44,10 @@ class Account(AbstractBaseUser):
         verbose_name_plural = 'Аккаунты'
         ordering = ['-date_joined']
 
-    first_name = models.CharField(max_length=50, null=True, verbose_name='Фамилия')
-    last_name = models.CharField(max_length=50, null=True, verbose_name='Имя')
-    email = models.CharField(max_length=100, null=True, verbose_name='Почта')
-    phone_number = models.CharField(max_length=50, null=True, verbose_name='Номер телефона')
+    first_name = models.CharField(max_length=255, null=True, verbose_name='Фамилия')
+    last_name = models.CharField(max_length=255, null=True, verbose_name='Имя')
+    email = models.CharField(max_length=255, null=True, verbose_name='Почта')
+    phone_number = models.CharField(max_length=255, null=True, verbose_name='Номер телефона')
 
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now_add=True)
@@ -87,9 +87,9 @@ class UserProfile(models.Model):
     address = models.CharField(max_length=255, blank=True, verbose_name='Адрес')
     profile_picture = fields.ImageField(blank=True, default='user_profile/default.png',
                                         upload_to='user_profile', verbose_name='Фото')
-    city = models.CharField(max_length=100, blank=True, verbose_name='Город')
-    state = models.CharField(max_length=100, blank=True, verbose_name='Область')
-    country = models.CharField(max_length=100, blank=True, verbose_name='Страна')
+    city = models.CharField(max_length=255, blank=True, verbose_name='Город')
+    state = models.CharField(max_length=255, blank=True, verbose_name='Область')
+    country = models.CharField(max_length=255, blank=True, verbose_name='Страна')
 
     def __str__(self):
         return str(self.user)

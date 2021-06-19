@@ -25,8 +25,11 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'smartfields',
     'debug_toolbar',
+    'rest_framework',
+    'rest_framework.authtoken',
 
     'accounts',
+    'category',
 ]
 
 MIDDLEWARE = [
