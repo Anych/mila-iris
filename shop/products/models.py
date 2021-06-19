@@ -9,7 +9,7 @@ from smartfields import fields
 
 from accounts.models import Account
 from category.models import Category, Brand
-from store.utils import gen_slug
+from products.utils import gen_slug
 
 
 class Product(models.Model):
@@ -19,28 +19,27 @@ class Product(models.Model):
         verbose_name_plural = 'Товары'
         ordering = ['category', 'price', '-create_date']
 
-    article = models.CharField(max_length=200, null=True, verbose_name='Артикул')
+    article = models.CharField(max_length=255, verbose_name='Артикул')
     category = TreeForeignKey(Category, on_delete=models.CASCADE, verbose_name='Категория')
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, blank=True, null=True, verbose_name='Бренд')
-    name_of_model = models.CharField(max_length=200, null=True, blank=True, verbose_name='Название модели')
-    slug = models.SlugField(max_length=200, verbose_name='Слаг', blank=True)
-    structure = models.CharField(max_length=200, blank=True, null=True, verbose_name='Состав')
-    color = models.CharField(max_length=100, verbose_name='Цвет')
+    model = models.CharField(max_length=255, null=True, blank=True, verbose_name='Название модели')
+    slug = models.SlugField(max_length=255, verbose_name='Слаг', blank=True)
+    structure = models.CharField(max_length=255, blank=True, null=True, verbose_name='Состав')
+    color = models.CharField(max_length=255, verbose_name='Цвет')
     another_color = models.ManyToManyField('self', blank=True, verbose_name='Другой цвет')
-    made_in = models.CharField(max_length=100, null=True, verbose_name='Производство')
+    made_in = models.CharField(max_length=255, verbose_name='Производство')
     description = models.TextField(blank=True, verbose_name='Описание')
-    img1 = fields.ImageField(upload_to='store/products', verbose_name='Изображение 1')
-    img2 = fields.ImageField(upload_to='store/products', verbose_name='Изображение 2')
-    price = models.IntegerField(verbose_name='Цена')
+    price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name='Цена')
     is_discount = models.BooleanField(default=False, verbose_name='Скидка')
-    discount_amount = models.IntegerField(blank=True, null=True, verbose_name='Размер скидки')
+    discount_amount = models.IntegerField(blank=True, verbose_name='Размер скидки')
+    discount_price = models.DecimalField(max_digits=10, decimal_places=0, blank=True, verbose_name='Размер скидки')
     create_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     is_recommend = models.BooleanField(default=False, verbose_name='Рекомендации')
     views = models.IntegerField(default=0, verbose_name='Просмотры')
 
     def __str__(self):
-        return f'{self.article} - {self.category.name_for_product}: {self.brand}'
+        return f'{self.article}: {self.brand}'
 
     def get_absolute_url(self):
         return reverse('product_detail', kwargs={'category_slug': self.category.slug, 'product_slug': self.slug})
@@ -64,7 +63,7 @@ class Product(models.Model):
             count = int(reviews['count'])
         return count
 
-    def discount_price(self):
+    def discount_price_if_not(self):
         if self.is_discount:
             self.discount_price = int((int(self.price) * (100 - int(self.discount_amount))) / 100)
             return self.discount_price
@@ -95,8 +94,8 @@ class ProductGallery(models.Model):
         verbose_name = 'Галерея'
         verbose_name_plural = 'Галереи'
 
-    product = models.ForeignKey(Product, null=True, on_delete=models.CASCADE, verbose_name='Продукт')
-    image = fields.ImageField(upload_to='store/products', verbose_name='Изображение')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт')
+    image = fields.ImageField(upload_to='products/product', verbose_name='Изображение')
 
 
 class ProductFeatures(models.Model):
@@ -106,14 +105,14 @@ class ProductFeatures(models.Model):
         verbose_name_plural = 'Дополниетелыные поля продукта'
 
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт')
-    value = models.CharField(max_length=200, verbose_name='Ключ')
-    feature = models.CharField(max_length=200, verbose_name='Значение')
+    key = models.CharField(max_length=255, verbose_name='Ключ')
+    value = models.CharField(max_length=255, verbose_name='Значение')
 
 
 class Size(models.Model):
 
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт')
-    size = models.CharField(max_length=100, verbose_name='Размер')
+    size = models.CharField(max_length=255, verbose_name='Размер')
     stock = models.IntegerField(default=1, verbose_name='Колличество')
 
     def __str__(self):
@@ -126,7 +125,7 @@ class ReviewRating(models.Model):
     user = models.ForeignKey(Account, on_delete=models.CASCADE, verbose_name='Пользователь')
     review = models.TextField(max_length=1500, blank=True, verbose_name='Отзыв')
     rating = models.FloatField(verbose_name='Рейтинг')
-    ip = models.CharField(max_length=20, blank=True, verbose_name='IP')
+    ip = models.CharField(max_length=255, blank=True, verbose_name='IP')
     status = models.BooleanField(default=True, verbose_name='Статус')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата обновления')
@@ -140,8 +139,8 @@ class CustomerQuestion(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт')
     question = models.TextField(max_length=1500, blank=True, verbose_name='Вопрос')
     user = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, verbose_name='Пользователь')
-    email = models.CharField(max_length=200, blank=True, verbose_name='Почта')
-    name = models.CharField(max_length=200, blank=True, verbose_name='Имя')
+    email = models.CharField(max_length=255, blank=True, verbose_name='Почта')
+    name = models.CharField(max_length=255, blank=True, verbose_name='Имя')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
 
     def __str__(self):
