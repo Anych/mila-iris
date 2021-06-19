@@ -31,9 +31,9 @@
                     <!--Desktop Menu-->
                     <nav class="grid__item" id="AccessibleNav">
                         <ul id="siteNav" class="site-nav medium center hidearrow">
-                            <li><a href="">Одежда</a></li>
-                            <li><a href="">Обувь</a></li>
-                            <li><a href="">Акссессуары</a></li>
+                            <li><a href="{% url 'category' category_slug='clothes' %}">Одежда</a></li>
+                            <li><a href="{% url 'category' category_slug='shoes' %}">Обувь</a></li>
+                            <li><a href="{% url 'category' category_slug='accessories' %}">Аксессуары</a></li>
                             <li><a href="">Скидки</a></li>
                         </ul>
                     </nav>
