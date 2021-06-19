@@ -11,6 +11,7 @@ handler403 = views.PermissionDeniedView.as_view()
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
+    path('', views.BaseView.as_view(), name='home'),
 ]
 
 if settings.DEBUG:
