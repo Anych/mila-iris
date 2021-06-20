@@ -3,10 +3,10 @@
     <div class="container">
         <div class="breadcrumbs"><a href="{% url 'home' %}" title="На главную">Главная</a>
             {% if sub_category %}
-            <span aria-hidden="true">|</span> <span><a href="{{ category.get_absolute_url }}" title="К категории">{{ category.name }}</a></span>
-            <span aria-hidden="true">|</span> <span><a href="{{ sub_category.get_url }}" title="К категории">{{ sub_category.name }}</a></span></div>
+            <span aria-hidden="true">|</span> <span><a href="{{ category.get_category_url }}" title="К категории">{{ category.name }}</a></span>
+            <span aria-hidden="true">|</span> <span><a href="{{ sub_category.get_subcategory_url }}" title="К категории">{{ sub_category.name }}</a></span></div>
             {% else %}
-            <span aria-hidden="true">|</span> <span><a href="{{ category.get_absolute_url }}" title="К категории">{{ category.name }}</a></span></div>
+            <span aria-hidden="true">|</span> <span><a href="{{ category.get_category_url }}" title="К категории">{{ category.name }}</a></span></div>
             {% endif %}
     </div>
 </div>

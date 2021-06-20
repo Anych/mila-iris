@@ -22,10 +22,10 @@ class Category(MPTTModel):
     def __str__(self):
         return self.name
 
-    def get_absolute_url(self):
+    def get_category_url(self):
         return reverse('category', kwargs={'category_slug': self.slug})
 
-    def get_url(self):
+    def get_subcategory_url(self):
         return reverse('sub_category', kwargs={'category_slug': self.parent.slug, 'sub_category_slug': self.slug})
 
     def get_sales_url(self):

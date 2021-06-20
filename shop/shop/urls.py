@@ -13,6 +13,7 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
 
     path('category/', include('category.urls')),
+    path('products/', include('products.urls')),
 
     path('', views.BaseView.as_view(), name='home'),
 ]

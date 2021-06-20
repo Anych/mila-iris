@@ -24,7 +24,8 @@ class Product(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, blank=True, null=True, verbose_name='Бренд')
     model = models.CharField(max_length=255, null=True, blank=True, verbose_name='Название модели')
     slug = models.SlugField(max_length=255, verbose_name='Слаг', blank=True)
-    structure = models.CharField(max_length=255, blank=True, null=True, verbose_name='Состав')
+    structure = models.CharField(max_length=255, blank=True, null=True, verbose_name='Состав',
+                                 help_text='Например: Хлопок - 50%, полиэстер - 50%')
     color = models.CharField(max_length=255, verbose_name='Цвет')
     another_color = models.ManyToManyField('self', blank=True, verbose_name='Другой цвет')
     made_in = models.CharField(max_length=255, verbose_name='Производство')
@@ -32,7 +33,9 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name='Цена')
     is_discount = models.BooleanField(default=False, verbose_name='Скидка')
     discount_amount = models.IntegerField(blank=True, verbose_name='Размер скидки')
-    discount_price = models.DecimalField(max_digits=10, decimal_places=0, blank=True, verbose_name='Размер скидки')
+    discount_price = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True,
+                                         verbose_name='Цена со скидкой',
+                                         help_text='Поле высчитывается автоматически, можете написать цену в ручную')
     create_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     is_recommend = models.BooleanField(default=False, verbose_name='Рекомендации')
@@ -41,8 +44,18 @@ class Product(models.Model):
     def __str__(self):
         return f'{self.article}: {self.brand}'
 
-    def get_absolute_url(self):
-        return reverse('product_detail', kwargs={'category_slug': self.category.slug, 'product_slug': self.slug})
+    def product_image1(self):
+        image = ProductGallery.objects.filter(product=self).first()
+        return image
+
+    def product_image2(self):
+        images = ProductGallery.objects.filter(product=self)
+        image = images[1]
+        return image
+
+    def get_product_url(self):
+        return reverse('product', kwargs={'category_slug': self.category.parent.slug,
+                                          'sub_category_slug': self.category.slug, 'product_slug': self.slug})
 
     def average_review(self):
         reviews = ReviewRating.objects.filter(product=self, status=True).aggregate(average=Avg('rating'))
@@ -63,20 +76,12 @@ class Product(models.Model):
             count = int(reviews['count'])
         return count
 
-    def discount_price_if_not(self):
-        if self.is_discount:
-            self.discount_price = int((int(self.price) * (100 - int(self.discount_amount))) / 100)
-            return self.discount_price
+    def calc_discount_price(self):
+        self.discount_price = int((int(self.price) * (100 - int(self.discount_amount))) / 100)
+        return self.discount_price
 
     def you_save(self):
         return self.price - self.discount_price
-
-    def stock(self):
-        stocks = Size.objects.filter(product=self).aggregate(count=Count('id'))
-        count = 0
-        if stocks['count'] is not None:
-            count = int(stocks['count'])
-        return count
 
     def increment_views(self):
         self.views += 1

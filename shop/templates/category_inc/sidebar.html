@@ -1,12 +1,13 @@
-{% load mptt_tags %}
-
 <div class="sidebar_widget categories filter-widget">
     <div class="widget-title"><h2>Одежда</h2></div>
         <div class="widget-content">
             <ul class="sidebar_categories">
-            {% recursetree cloth_categories %}
-                <li class="lvl-1"><a href="{{ node.get_url }}" class="site-nav">{{ node.name }}</a></li>
-            {% endrecursetree %}
+            {% for cloth in cloth_categories %}
+                {% if cloth.slug in request.path %}
+                <li class="lvl-1"><a href="{{ cloth.get_subcategory_url }}" class="site-nav">{{ cloth.name }}</a></li>
+                {% else %}
+                {% endif %}
+            {% endfor %}
             </ul>
         </div>
 </div>
