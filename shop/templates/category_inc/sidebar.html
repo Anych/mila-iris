@@ -1,11 +1,42 @@
 <div class="sidebar_widget categories filter-widget">
-    <div class="widget-title"><h2>Одежда</h2></div>
-        <div class="widget-content">
+    <div class="widget-title{% if 'clothes' not in request.path %} active{% endif %}"><h2>Одежда</h2></div>
+        <div class="widget-content" {% if 'clothes' not in request.path %}style="display: none;{% endif %}">
             <ul class="sidebar_categories">
             {% for cloth in cloth_categories %}
                 {% if cloth.slug in request.path %}
-                <li class="lvl-1"><a href="{{ cloth.get_subcategory_url }}" class="site-nav">{{ cloth.name }}</a></li>
+                    <li class="lvl-1"><a href="{{ cloth.get_subcategory_url }}" class="site-nav"><b>{{ cloth.name }}</b></a></li>
                 {% else %}
+                    <li class="lvl-1"><a href="{{ cloth.get_subcategory_url }}" class="site-nav">{{ cloth.name }}</a></li>
+                {% endif %}
+            {% endfor %}
+            </ul>
+        </div>
+</div>
+
+<div class="sidebar_widget categories filter-widget">
+    <div class="widget-title{% if 'shoes' not in request.path %} active{% endif %}"><h2>Обувь</h2></div>
+        <div class="widget-content" {% if 'shoes' not in request.path %}style="display: none;{% endif %}">
+            <ul class="sidebar_categories">
+            {% for shoe in shoe_categories %}
+                {% if cloth.slug in request.path %}
+                    <li class="lvl-1"><a href="{{ shoe.get_subcategory_url }}" class="site-nav"><b>{{ shoe.name }}</b></a></li>
+                {% else %}
+                    <li class="lvl-1"><a href="{{ shoe.get_subcategory_url }}" class="site-nav">{{ shoe.name }}</a></li>
+                {% endif %}
+            {% endfor %}
+            </ul>
+        </div>
+</div>
+
+<div class="sidebar_widget categories filter-widget">
+    <div class="widget-title{% if 'accessories' not in request.path %} active{% endif %}"><h2>Аксессуары</h2></div>
+        <div class="widget-content" {% if 'accessories' not in request.path %}style="display: none;{% endif %}">
+            <ul class="sidebar_categories">
+            {% for accessor in accessor_categories %}
+                {% if accessor.slug in request.path %}
+                    <li class="lvl-1"><a href="{{ accessor.get_subcategory_url }}" class="site-nav"><b>{{ accessor.name }}</b></a></li>
+                {% else %}
+                    <li class="lvl-1"><a href="{{ accessor.get_subcategory_url }}" class="site-nav">{{ accessor.name }}</a></li>
                 {% endif %}
             {% endfor %}
             </ul>

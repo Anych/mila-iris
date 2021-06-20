@@ -4,6 +4,7 @@ __pycache__/
 shop/.idea/
 shop/__pycache__/
 shop/shop/__pycache__/
+shop/shop/static/
 
 # Environments
 .env
