@@ -34,7 +34,11 @@
         <div class="product-price">
             {% if product.is_discount %}
             <a href="{{ product.get_product_url }}"><p class="product-price grid-view-item__meta">
-                <span class="new_price">{{ product.discount_price | intcomma }} &#8376;</span>
+                {% if product.discount_price %}
+                    <span class="new_price">{{ product.discount_price | intcomma }} &#8376;</span>
+                {% else %}
+                    <span class="new_price">{{ product.calc_discount_price | intcomma }} &#8376;</span>
+                {% endif %}
                 <span class="old-price">{{ product.price | intcomma }}</span>
             </p></a>
             {% else %}
