@@ -5,7 +5,7 @@ from mptt.models import MPTTModel
 
 
 class Category(MPTTModel):
-
+    """This is model for category tree. Which use MPTT module."""
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
@@ -23,17 +23,20 @@ class Category(MPTTModel):
         return self.name
 
     def get_category_url(self):
+        """URL for ancestors"""
         return reverse('category', kwargs={'category_slug': self.slug})
 
     def get_subcategory_url(self):
+        """URL for subcategories"""
         return reverse('sub_category', kwargs={'category_slug': self.parent.slug, 'sub_category_slug': self.slug})
 
     def get_sales_url(self):
+        """URL for sales"""
         return reverse('sales', kwargs={'sales_slug': self.slug})
 
 
 class Brand(models.Model):
-
+    """This is model for brands, which is using in product model"""
     class Meta:
         verbose_name = 'Бренд'
         verbose_name_plural = 'Бренды'

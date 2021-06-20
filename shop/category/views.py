@@ -31,7 +31,26 @@ class SubCategoryView(CategoryView):
     """View for subcategories which are descending from main categories, instance of CategoryView"""
 
     def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(**kwargs)
+        sub_category = super().get_queryset(**kwargs).filter(slug=self.kwargs['sub_category_slug']).first()
+        category = sub_category.get_ancestors(ascending=False, include_self=False).first()
+        products = Product.objects.filter(category=sub_category, size__stock__gt=0).\
+            order_by('-is_recommend', '-modified_date').distinct().select_related()
+        popular_products = products.filter(views__gt=1)
+        products_count = len(products)
+        context = {
+                'sub_category': sub_category,
+                'products': products,
+                'popular_products': popular_products,
+                'category': category,
+                'products_count': products_count,
+            }
+        return context
+
+
+class SalesView(CategoryView):
+    """View for subcategories which are descending from main categories, instance of CategoryView"""
+
+    def get_context_data(self, *args, **kwargs):
         sub_category = super().get_queryset(**kwargs).filter(slug=self.kwargs['sub_category_slug']).first()
         category = sub_category.get_ancestors(ascending=False, include_self=False).first()
         products = Product.objects.filter(category=sub_category, size__stock__gt=0).\
