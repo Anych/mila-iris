@@ -3,10 +3,18 @@
         <div class="widget-content" {% if 'clothes' not in request.path %}style="display: none;{% endif %}">
             <ul class="sidebar_categories">
             {% for cloth in cloth_categories %}
-                {% if cloth.slug in request.path %}
-                    <li class="lvl-1"><a href="{{ cloth.get_subcategory_url }}" class="site-nav"><b>{{ cloth.name }}</b></a></li>
+                {% if 'sales' in request.path %}
+                    {% if cloth.slug in request.path %}
+                        <li class="lvl-1"><a href="{{ cloth.get_sales_subcategory_url }}" class="site-nav"><b>{{ cloth.name }}</b></a></li>
+                    {% else %}
+                        <li class="lvl-1"><a href="{{ cloth.get_sales_subcategory_url }}" class="site-nav">{{ cloth.name }}</a></li>
+                    {% endif %}
                 {% else %}
-                    <li class="lvl-1"><a href="{{ cloth.get_subcategory_url }}" class="site-nav">{{ cloth.name }}</a></li>
+                    {% if cloth.slug in request.path %}
+                        <li class="lvl-1"><a href="{{ cloth.get_subcategory_url }}" class="site-nav"><b>{{ cloth.name }}</b></a></li>
+                    {% else %}
+                        <li class="lvl-1"><a href="{{ cloth.get_subcategory_url }}" class="site-nav">{{ cloth.name }}</a></li>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
             </ul>
@@ -18,10 +26,18 @@
         <div class="widget-content" {% if 'shoes' not in request.path %}style="display: none;{% endif %}">
             <ul class="sidebar_categories">
             {% for shoe in shoe_categories %}
-                {% if cloth.slug in request.path %}
-                    <li class="lvl-1"><a href="{{ shoe.get_subcategory_url }}" class="site-nav"><b>{{ shoe.name }}</b></a></li>
+                {% if 'sales' in request.path %}
+                    {% if shoe.slug in request.path %}
+                        <li class="lvl-1"><a href="{{ shoe.get_sales_subcategory_url }}" class="site-nav"><b>{{ shoe.name }}</b></a></li>
+                    {% else %}
+                        <li class="lvl-1"><a href="{{ shoe.get_sales_subcategory_url }}" class="site-nav">{{ shoe.name }}</a></li>
+                    {% endif %}
                 {% else %}
-                    <li class="lvl-1"><a href="{{ shoe.get_subcategory_url }}" class="site-nav">{{ shoe.name }}</a></li>
+                    {% if shoe.slug in request.path %}
+                        <li class="lvl-1"><a href="{{ shoe.get_subcategory_url }}" class="site-nav"><b>{{ shoe.name }}</b></a></li>
+                    {% else %}
+                        <li class="lvl-1"><a href="{{ shoe.get_subcategory_url }}" class="site-nav">{{ shoe.name }}</a></li>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
             </ul>
@@ -33,10 +49,18 @@
         <div class="widget-content" {% if 'accessories' not in request.path %}style="display: none;{% endif %}">
             <ul class="sidebar_categories">
             {% for accessor in accessor_categories %}
-                {% if accessor.slug in request.path %}
-                    <li class="lvl-1"><a href="{{ accessor.get_subcategory_url }}" class="site-nav"><b>{{ accessor.name }}</b></a></li>
+                {% if 'sales' in request.path %}
+                    {% if accessor.slug in request.path %}
+                        <li class="lvl-1"><a href="{{ accessor.get_sales_subcategory_url }}" class="site-nav"><b>{{ accessor.name }}</b></a></li>
+                    {% else %}
+                        <li class="lvl-1"><a href="{{ accessor.get_sales_subcategory_url }}" class="site-nav">{{ accessor.name }}</a></li>
+                    {% endif %}
                 {% else %}
-                    <li class="lvl-1"><a href="{{ accessor.get_subcategory_url }}" class="site-nav">{{ accessor.name }}</a></li>
+                    {% if accessor.slug in request.path %}
+                        <li class="lvl-1"><a href="{{ accessor.get_subcategory_url }}" class="site-nav"><b>{{ accessor.name }}</b></a></li>
+                    {% else %}
+                        <li class="lvl-1"><a href="{{ accessor.get_subcategory_url }}" class="site-nav">{{ accessor.name }}</a></li>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
             </ul>

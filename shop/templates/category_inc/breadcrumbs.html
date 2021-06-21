@@ -2,11 +2,21 @@
 <div class="breadcrumbs-wrapper">
     <div class="container">
         <div class="breadcrumbs"><a href="{% url 'home' %}" title="На главную">Главная</a>
-            {% if subcategory %}
-            <span aria-hidden="true">|</span> <span><a href="{{ category.get_category_url }}" title="К категории">{{ category.name }}</a></span>
-            <span aria-hidden="true">|</span> <span><a href="{{ subcategory.get_subcategory_url }}" title="К категории">{{ subcategory.name }}</a></span></div>
+            {% if 'sales' in request.path %}
+                <span aria-hidden="true">|</span> <span><a href="{% url 'sales_main' %}" title="К скидкам">Скидки</a></span>{% if subcategory or category %}{% else %}</div>{% endif %}
+                {% if subcategory %}
+                    <span aria-hidden="true">|</span> <span><a href="{{ category.get_sales_category_url }}" title="К категории">{{ category.name }}</a></span>
+                    <span aria-hidden="true">|</span> <span><a href="{{ subcategory.get_sales_subcategory_url }}" title="К категории">{{ subcategory.name }}</a></span></div>
+                {% elif category %}
+                    <span aria-hidden="true">|</span> <span><a href="{{ category.get_sales_category_url }}" title="К категории">{{ category.name }}</a></span></div>
+                {% endif %}
             {% else %}
-            <span aria-hidden="true">|</span> <span><a href="{{ category.get_category_url }}" title="К категории">{{ category.name }}</a></span></div>
+                {% if subcategory %}
+                    <span aria-hidden="true">|</span> <span><a href="{{ category.get_category_url }}" title="К категории">{{ category.name }}</a></span>
+                    <span aria-hidden="true">|</span> <span><a href="{{ subcategory.get_subcategory_url }}" title="К категории">{{ subcategory.name }}</a></span></div>
+                {% elif category %}
+                    <span aria-hidden="true">|</span> <span><a href="{{ category.get_category_url }}" title="К категории">{{ category.name }}</a></span></div>
+                {% endif %}
             {% endif %}
     </div>
 </div>

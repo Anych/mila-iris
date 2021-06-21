@@ -12,7 +12,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
 
-    path('category/', include('category.urls')),
+    path('shop/', include('category.urls')),
     path('products/', include('products.urls')),
 
     path('', views.BaseView.as_view(), name='home'),

@@ -23,20 +23,25 @@ class Category(MPTTModel):
         return self.name
 
     def get_category_url(self):
-        """URL for ancestors"""
+        """URL for category ancestors"""
         return reverse('category', kwargs={'category_slug': self.slug})
 
     def get_subcategory_url(self):
         """URL for subcategories"""
         return reverse('subcategory', kwargs={'category_slug': self.parent.slug, 'subcategory_slug': self.slug})
 
-    def get_sales_url(self):
-        """URL for sales"""
-        return reverse('sales', kwargs={'sales_slug': self.slug})
+    def get_sales_category_url(self):
+        """URL for sales category ancestors"""
+        return reverse('sales_category', kwargs={'category_slug': self.slug})
+
+    def get_sales_subcategory_url(self):
+        """URL for sales subcategory"""
+        return reverse('sales_subcategory', kwargs={'category_slug': self.parent.slug, 'subcategory_slug': self.slug})
 
 
 class Brand(models.Model):
     """This is model for brands, which is using in product model"""
+
     class Meta:
         verbose_name = 'Бренд'
         verbose_name_plural = 'Бренды'
@@ -47,5 +52,6 @@ class Brand(models.Model):
     def __str__(self):
         return self.name
 
-    def get_absolute_url(self):
-        return reverse('category', kwargs={'brand_slug': self.slug})
+    def get_brand_url(self):
+        """URL for brands"""
+        return reverse('brands', kwargs={'brand_slug': self.slug})
