@@ -28,7 +28,7 @@ class Category(MPTTModel):
 
     def get_subcategory_url(self):
         """URL for subcategories"""
-        return reverse('sub_category', kwargs={'category_slug': self.parent.slug, 'sub_category_slug': self.slug})
+        return reverse('subcategory', kwargs={'category_slug': self.parent.slug, 'subcategory_slug': self.slug})
 
     def get_sales_url(self):
         """URL for sales"""
