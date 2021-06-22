@@ -10,8 +10,8 @@ class CartMixin(View):
     TOTAL = 0
 
     def dispatch(self, request, *args, **kwargs):
-        request_user = request.user
-        if request_user.is_anonymous:
+        self.request_user = request.user
+        if self.request_user.is_anonymous:
             try:
                 cart = Cart.objects.get(cart_id=_cart_id(request))
                 cart_items = CartItem.objects.filter(cart=cart)
@@ -19,8 +19,9 @@ class CartMixin(View):
                 cart = Cart.objects.create(cart_id=_cart_id(request))
                 cart_items = None
             cart.save()
+            self.cart = cart
         else:
-            cart_items = CartItem.objects.filter(user=request_user)
+            cart_items = CartItem.objects.filter(user=self.request_user)
         self.cart_items = cart_items
         return super().dispatch(request, *args, **kwargs)
 
@@ -37,3 +38,22 @@ class CartMixin(View):
             self.DELIVIRY = 0
         self.TOTAL = self.TOTAL + self.DELIVIRY
         return self.TOTAL
+
+    def get_cart_item(self, product, cart_item_id=None, size=None, quantity=0):
+        if self.request_user.is_authenticated:
+            if size is not None:
+                cart_item = CartItem.objects.get(product=product, user=self.request_user, size=size)
+            elif quantity == 1:
+                cart_item = CartItem.objects.create(product=product,
+                                                    quantity=quantity, user=self.request_user, size=size)
+            else:
+                cart_item = CartItem.objects.get(product=product, user=self.request_user, id=cart_item_id)
+
+        else:
+            if size is not None:
+                cart_item = CartItem.objects.get(product=product, cart=self.cart, size=size)
+            elif quantity == 1:
+                cart_item = CartItem.objects.create(product=product, quantity=quantity, cart=self.cart, size=size)
+            else:
+                cart_item = CartItem.objects.get(product=product, cart=self.cart, id=cart_item_id)
+        return cart_item
