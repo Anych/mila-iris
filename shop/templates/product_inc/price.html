@@ -15,7 +15,7 @@
     </div>
     {% endif %}
     <h1 class="product-single__title">{{ product.brand }}</h1>
-    <p>{{ product.category.name_for_product }}{% if product.name_of_model %} - {{ product.name_of_model }}{% endif %}</p>
+    <p>{{ product.category.name_for_product }}{% if product.model %} - {{ product.model }}{% endif %}</p>
     {% if product.is_discount %}
     <p class="product-single__price product-single__price-product-template">
         <s id="ComparePrice-product-template"><span class="money">{{ product.price | intcomma }}</span></s>

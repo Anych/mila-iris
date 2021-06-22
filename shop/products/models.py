@@ -58,7 +58,7 @@ class Product(models.Model):
     def get_product_url(self):
         """URL for every product in site includes category, subcategory and own product's slug"""
         return reverse('product', kwargs={'category_slug': self.category.parent.slug,
-                                          'sub_category_slug': self.category.slug, 'product_slug': self.slug})
+                                          'subcategory_slug': self.category.slug, 'product_slug': self.slug})
 
     def average_review(self):
         """It is average rating for product"""

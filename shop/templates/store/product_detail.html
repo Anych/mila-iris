@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
-{% load static recaptcha3 %}
+{% load static %}
 {% load humanize %}
 
 {% block title %}Купить {{ product.brand }} {{ product.category.name_for_product| lower}}{% if product.name_of_model %} - {{ product.name_of_model }}{% endif %}{% endblock %}
 
-{% block style %}   {% recaptcha_init %}    {% recaptcha_ready action_name='homepage' %}    {% endblock style %}
+{% block style %}{% endblock style %}
 
 {% block body %} class="template-product product-single-center-mode" style="padding-bottom: 0px;"{% endblock body %}
 
@@ -30,7 +30,7 @@
                             <p><span>Состав:</span> {{ product.structure }}</p>
                             <p><span>Производство:</span> {{ product.made_in }}</p>
                             {% for feature in product_features %}
-                            <p><span>{{ feature.value }}:</span> {{ feature.key }}</p>
+                            <p><span>{{ feature.key }}:</span> {{ feature.value }}</p>
                             {% endfor %}
                             <p><span>Артикул:</span> {{ product.article }}</p>
                             <p>{{ product.description }}</p>
