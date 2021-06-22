@@ -29,7 +29,6 @@ class CartItem(models.Model):
     size = models.ForeignKey(Size, blank=True, on_delete=models.CASCADE, verbose_name='Размер')
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, null=True, verbose_name='Корзина')
     quantity = models.IntegerField(verbose_name='Колличество')
-    is_active = models.BooleanField(default=True)
 
     def sub_total(self):
         """Amount of product price and its quantity in cart."""

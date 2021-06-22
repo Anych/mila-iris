@@ -20,7 +20,7 @@
     <p class="product-single__price product-single__price-product-template">
         <s id="ComparePrice-product-template"><span class="money">{{ product.price | intcomma }}</span></s>
         <span class="product-price__price product-price__price-product-template product-price__sale product-price__sale--single">
-            <span id="ProductPrice-product-template"><span class="money">{{ product.discount_price | intcomma }} &#8376;</span></span>
+            <span id="ProductPrice-product-template"><span class="money">{% if product.discount_price %}{{ product.discount_price | intcomma }}{% else %}{{ product.calc_discount_price | intcomma }}{% endif %}&#8376;</span></span>
         </span>
         <span class="discount-badge"> <span class="devider">|</span>&nbsp;
             <span>Вы экономите</span>

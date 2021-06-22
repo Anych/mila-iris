@@ -89,7 +89,10 @@ class Product(models.Model):
 
     def you_save(self):
         """Function which calculate amount sum, which user save, if product has discount price"""
-        return self.price - self.discount_price
+        if self.discount_price:
+            return self.price - self.discount_price
+        else:
+            return self.price - self.calc_discount_price()
 
     def increment_views(self):
         """A simple function to calculate product views, which  I should to rewrite"""
