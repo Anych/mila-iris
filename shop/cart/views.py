@@ -11,35 +11,15 @@ from products.models import Product, Size
 
 class CartView(CartMixin, View):
 
-    delivery = 2000
-
     def get(self, request, *args, **kwargs):
-        delivery = 2000
-        grand_total = 0
-        total = 0
-        quantity = 0
-        cart_items = None
         try:
-            if request.user.is_authenticated:
-                cart_items = CartItem.objects.filter(user__email=request.user.email)
-            else:
-                cart = Cart.objects.get(cart_id=_cart_id(request))
-                cart_items = CartItem.objects.filter(cart=cart, is_active=True)
-            for cart_item in cart_items:
-                total += (cart_item.product.price * cart_item.quantity)
-                quantity += cart_item.quantity
-            if total > 50000:
-                delivery = 0
-            grand_total = delivery + total
+            self.calculate_total(self.cart_items)
         except ObjectDoesNotExist:
             pass
 
         context = {
-            'total': total,
-            'quantity': quantity,
-            'cart_items': cart_items,
-            'delivery': delivery,
-            'grand_total': grand_total,
+            'total': self.TOTAL,
+            'cart_items': self.cart_items,
         }
         return render(request, 'store/cart.html', context)
 
