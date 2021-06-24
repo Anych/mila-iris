@@ -94,16 +94,16 @@
                                 {% for cart_item in cart_items %}
                                     <tr>
                                         <td class="text-left">{{ cart_item.product.category.name_for_product }}: {{ cart_item.product.brand }}</td>
-                                        <td>{{ cart_item.product.price | intcomma }}</td>
-                                        <td>{{ cart_item.quantity }}</td>
-                                    <td>
-                                    {{ cart_item.product.color }} / {{ cart_item.size }}
-                                    </td>
                                         {% if cart_item.product.is_discount %}
                                             <td>&#8376; {% if cart_item.product.discount_price %}{{ cart_item.product.discount_price | intcomma }}{% else %}{{ cart_item.product.calc_discount_price | intcomma }}{% endif %}</td>
                                         {% else %}
                                             <td>&#8376; {{ cart_item.product.price | intcomma }}</td>
                                         {% endif %}
+                                        <td>{{ cart_item.quantity }}</td>
+                                    <td>
+                                    {{ cart_item.product.color }} / {{ cart_item.size }}
+                                    </td>
+                                        <td>&#8376; {{ cart_item.sub_total }}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>

@@ -32,7 +32,13 @@ class CartItem(models.Model):
 
     def sub_total(self):
         """Amount of product price and its quantity in cart."""
-        return self.product.price * self.quantity
+        if self.product.is_discount:
+            if self.product.discount_price:
+                return self.product.discount_price * self.quantity
+            else:
+                return self.product.calc_discount_price * self.quantity
+        else:
+            return self.product.price * self.quantity
 
     def __unicode__(self):
         return self.product

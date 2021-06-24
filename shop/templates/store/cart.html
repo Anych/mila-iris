@@ -80,11 +80,7 @@
                                     </div>
                                 </td>
                                 <td class="text-right small--hide cart-price">
-                                    {% if cart_item.product.is_discount %}
-                                        <div><span class="money">&#8376; {% if cart_item.product.discount_price %}{{ cart_item.product.discount_price | intcomma }}{% else %}{{ cart_item.product.calc_discount_price | intcomma }}{% endif %}</span>
-                                    {% else %}
-                                        <span class="money">&#8376; {{ cart_item.product.price | intcomma }}</span>
-                                    {% endif %}
+                                    <div><span class="money">&#8376; {{ cart_item.sub_total | intcomma }}</span></div>
                                 </td>
                                 <td class="text-center small--hide"><a href="{% url 'remove_from_cart_item' cart_item.product.id cart_item.id %}" class="btn btn--secondary cart__remove" title="Удалить"><i class="icon icon anm anm-times-l"></i></a></td>
                             </tr>
@@ -92,7 +88,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="3" class="text-left"><a href="" class="btn--link cart-continue"><i class="icon icon-arrow-circle-left"></i> Продолжить покупки</a></td>
+                                <td colspan="3" class="text-left"><a href="{% url 'category_main' %}" class="btn--link cart-continue"><i class="icon icon-arrow-circle-left"></i> Продолжить покупки</a></td>
                             </tr>
                         </tfoot>
                 </table>

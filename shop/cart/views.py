@@ -9,10 +9,10 @@ from products.models import Product, Size
 
 
 class CartView(CartMixin, View):
-
+    """View for cart template which calculate total sum."""
     def get(self, request, *args, **kwargs):
         try:
-            self.calculate_total(self.cart_items)
+            self.calculate_total()
         except ObjectDoesNotExist:
             pass
 
@@ -25,27 +25,31 @@ class CartView(CartMixin, View):
 
 
 class CheckOutView(LoginRequiredMixin, CartMixin, View):
-
+    """View for checkout template which calculate total sum."""
     def get(self, request, *args, **kwargs):
-        if self.request_user.confirm_email:
-            self.calculate_total(self.cart_items)
-            context = {
-                'delivery': self.DELIVERY,
-                'total': self.TOTAL,
-                'cart_items': self.cart_items,
-            }
-            return render(request, 'store/checkout.html', context)
-        else:
-            return redirect('/accounts/confirm_email/?command=make_order')
+        try:
+            if self.request_user.confirm_email:
+                self.calculate_total()
+            else:
+                return redirect('/accounts/confirm_email/?command=make_order')
+        except ObjectDoesNotExist:
+            pass
+        context = {
+            'delivery': self.DELIVERY,
+            'total': self.TOTAL,
+            'cart_items': self.cart_items,
+        }
+        return render(request, 'store/checkout.html', context)
 
 
 class AddToCartView(CartMixin, View):
-
+    """View for adding product to cart."""
     def post(self, request, *args, **kwargs):
         product = Product.objects.get(id=self.kwargs['product_id'])
         value = request.POST['size']
         size = Size.objects.get(product=product, size=value)
 
+        # checking if product has already added to cart
         try:
             cart_item = self.get_cart_item(product=product, size=size)
             cart_item.quantity += 1
@@ -60,7 +64,7 @@ class AddToCartView(CartMixin, View):
 
 
 class RemoveFromCartItemView(CartMixin, View):
-
+    """View for removing product from cart."""
     def get(self, request, *args, **kwargs):
         product = get_object_or_404(Product, id=self.kwargs['product_id'])
         cart_item = self.get_cart_item(product=product, cart_item_id=self.kwargs['cart_item_id'])
@@ -69,7 +73,7 @@ class RemoveFromCartItemView(CartMixin, View):
 
 
 class ReduceCartItemView(CartMixin, View):
-
+    """View for reducing product from cart."""
     def get(self, request, *args, **kwargs):
         product = get_object_or_404(Product, id=self.kwargs['product_id'])
 

@@ -5,11 +5,12 @@ from cart.utils import _cart_id
 
 
 class CartMixin(View):
-
+    """Mixin for cart and cart actions."""
     DELIVERY = 2000
     TOTAL = 0
 
     def dispatch(self, request, *args, **kwargs):
+        """Method which return request user and cart items."""
         self.request_user = request.user
         if self.request_user.is_anonymous:
             try:
@@ -25,7 +26,8 @@ class CartMixin(View):
         self.cart_items = cart_items
         return super().dispatch(request, *args, **kwargs)
 
-    def calculate_total(self, cart_items):
+    def calculate_total(self):
+        """Method which calculate total sum for order """
         for item in self.cart_items:
             if item.product.is_discount:
                 if item.product.discount_price:
@@ -40,6 +42,7 @@ class CartMixin(View):
         return self.TOTAL
 
     def get_cart_item(self, product, cart_item_id=None, size=None, quantity=0):
+        """Get or create cart item and check if user is authenticated."""
         if self.request_user.is_authenticated:
             if size is not None:
                 cart_item = CartItem.objects.get(product=product, user=self.request_user, size=size)
