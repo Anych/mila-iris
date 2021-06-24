@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import View
@@ -16,10 +17,26 @@ class CartView(CartMixin, View):
             pass
 
         context = {
+            'delivery': self.DELIVERY,
             'total': self.TOTAL,
             'cart_items': self.cart_items,
         }
         return render(request, 'store/cart.html', context)
+
+
+class CheckOutView(LoginRequiredMixin, CartMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        if self.request_user.confirm_email:
+            self.calculate_total(self.cart_items)
+            context = {
+                'delivery': self.DELIVERY,
+                'total': self.TOTAL,
+                'cart_items': self.cart_items,
+            }
+            return render(request, 'store/checkout.html', context)
+        else:
+            return redirect('/accounts/confirm_email/?command=make_order')
 
 
 class AddToCartView(CartMixin, View):
@@ -67,7 +84,3 @@ class ReduceCartItemView(CartMixin, View):
             pass
 
         return redirect('cart')
-
-
-class CheckOutView(CartMixin, View):
-    pass

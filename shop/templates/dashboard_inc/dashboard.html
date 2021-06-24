@@ -18,10 +18,10 @@
         <h3 class="text-center mt-2">Всего заказов </h3>
         {% if orders.count %}
             <h4 class="text-center mt-4">{{ orders_count }}</h4>
-            <a href="{% url 'store' %}"><p class="text-center mt-4 text-info">Перейти в магазин</p></a>
+            <a href="{% url 'category_main' %}"><p class="text-center mt-4 text-info">Перейти в магазин</p></a>
         {% else %}
             <h4 class="text-center">Заказов нет</h4>
-            <a href="{% url 'store' %}"><p class="text-center mt-4 text-info">Сделайте первый заказ</p></a>
+            <a href="{% url 'category_main' %}"><p class="text-center mt-4 text-info">Сделайте первый заказ</p></a>
         {% endif %}
     </div>
 </div>

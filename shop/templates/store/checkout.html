@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
-{% load static recaptcha3 humanize%}
+{% load static humanize%}
 
-{% block style %}   {% recaptcha_init %}    {% recaptcha_ready action_name='homepage' %}    {% endblock style %}
+{% block style %}{% endblock style %}
 
 {% block title %}Оформление заказа в магазине Mila&Iris Алматы.{% endblock %}
 
@@ -21,7 +21,7 @@
     <!--End Page Title with Image-->
     <div class="container">
         {% include 'inc/alerts.html' %}
-        <form action="{% url 'place_order' %}" method="POST">
+        <form action="" method="POST">
         <div class="row billing-fields">
             {% csrf_token %}
             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 sm-margin-30px-bottom">
@@ -99,18 +99,26 @@
                                     <td>
                                     {{ cart_item.product.color }} / {{ cart_item.size }}
                                     </td>
-                                        <td>&#8376; {{ cart_item.sub_total | intcomma }}</td>
+                                        {% if cart_item.product.is_discount %}
+                                            <td>&#8376; {% if cart_item.product.discount_price %}{{ cart_item.product.discount_price | intcomma }}{% else %}{{ cart_item.product.calc_discount_price | intcomma }}{% endif %}</td>
+                                        {% else %}
+                                            <td>&#8376; {{ cart_item.product.price | intcomma }}</td>
+                                        {% endif %}
                                     </tr>
                                 {% endfor %}
                                 </tbody>
                                 <tfoot class="font-weight-600">
                                     <tr>
                                         <td colspan="4" class="text-right">Доставка</td>
-                                        <td>&#8376; {{ delivery | intcomma }}</td>
+                                        {% if delivery > 0 %}
+                                            <td>&#8376; {{ delivery | intcomma }}</td>
+                                        {% else %}
+                                            <td>&#8376; 0</td>
+                                        {% endif %}
                                     </tr>
                                     <tr>
                                         <td colspan="4" class="text-right">Итого</td>
-                                        <td>&#8376; {{ grand_total | intcomma }}</td>
+                                        <td>&#8376; {{ total | intcomma }}</td>
                                     </tr>
                                 </tfoot>
                             </table>

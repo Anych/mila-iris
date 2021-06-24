@@ -22,7 +22,7 @@
         <h3 class="text-center">Ваша корзина пуста</h3>
         <br><br>
         <div class="text-center">
-            <a href="" class="btn btn-medium">Продолжить покупки</a>
+            <a href="{% url 'category_main' %}" class="btn btn-medium">Продолжить покупки</a>
         </div>
         {% else %}
         <div class="page-title"><h1>Корзина</h1></div>
@@ -58,8 +58,8 @@
                                 </td>
                                 <td class="cart__price-wrapper cart-flex-item">
                                     {% if cart_item.product.is_discount %}
-                                        <s id="ComparePrice-product-template"><span class="money">{{ cart_item.product.price | intcomma }}&#8376;</span></s><br>
-                                        <span id="ProductPrice-product-template"><span class="money">{% if cart_item.product.discount_price %}{{ cart_item.product.discount_price | intcomma }}{% else %}{{ cart_item.product.calc_discount_price | intcomma }}{% endif %}&#8376;</span></span>
+                                        <s id="ComparePrice-product-template"><span class="money">&#8376; {{ cart_item.product.price | intcomma }}</span></s><br>
+                                        <span id="ProductPrice-product-template"><span class="money">&#8376; {% if cart_item.product.discount_price %}{{ cart_item.product.discount_price | intcomma }}{% else %}{{ cart_item.product.calc_discount_price | intcomma }}{% endif %}</span></span>
                                     {% else %}
                                         <span class="money">&#8376; {{ cart_item.product.price | intcomma }}</span>
                                     {% endif %}
@@ -80,7 +80,11 @@
                                     </div>
                                 </td>
                                 <td class="text-right small--hide cart-price">
-                                    <div><span class="money">&#8376; {{ cart_item.sub_total | intcomma }}</span></div>
+                                    {% if cart_item.product.is_discount %}
+                                        <div><span class="money">&#8376; {% if cart_item.product.discount_price %}{{ cart_item.product.discount_price | intcomma }}{% else %}{{ cart_item.product.calc_discount_price | intcomma }}{% endif %}</span>
+                                    {% else %}
+                                        <span class="money">&#8376; {{ cart_item.product.price | intcomma }}</span>
+                                    {% endif %}
                                 </td>
                                 <td class="text-center small--hide"><a href="{% url 'remove_from_cart_item' cart_item.product.id cart_item.id %}" class="btn btn--secondary cart__remove" title="Удалить"><i class="icon icon anm anm-times-l"></i></a></td>
                             </tr>
@@ -98,14 +102,17 @@
             <div class="col-12 col-sm-12 col-md-4 col-lg-4 cart__footer">
                 <div class="solid-border">
                   <div class="row">
-                    <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Итого</strong></span><br><br>
-                    <span class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right"><span class="money">&#8376; {{ total | intcomma }}</span></span>
+                      <span class="col-12 col-sm-6 cart__subtotal-title">Доставка</span>
+                      <span class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right mb-3"><span class="money">&#8376; {{ delivery | intcomma }}</span></span>
                   </div>
-                <div class="cart__shipping">Общая сумма будет доступна при расчёте</div>
+                  <div class="row">
+
+                <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Итого</strong></span>
+                <span class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right"><span class="money">&#8376; {{ total | intcomma }}</span></span>
+                  </div>
                 <div class="order-button-payment" >
                     <a href="{% url 'checkout' %}"><button class="btn" value="Place order" type="submit">Оформление заказа</button></a>
                 </div>
-                  <div class="paymnet-img"><img src="{% static 'assets/images/payment-img.jpg' %}" alt="Payment"></div>
                 </div>
 
             </div>

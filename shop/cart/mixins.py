@@ -6,7 +6,7 @@ from cart.utils import _cart_id
 
 class CartMixin(View):
 
-    DELIVIRY = 2000
+    DELIVERY = 2000
     TOTAL = 0
 
     def dispatch(self, request, *args, **kwargs):
@@ -35,8 +35,8 @@ class CartMixin(View):
             else:
                 self.TOTAL += (item.product.price * item.quantity)
         if self.TOTAL > 50000:
-            self.DELIVIRY = 0
-        self.TOTAL = self.TOTAL + self.DELIVIRY
+            self.DELIVERY = 0
+        self.TOTAL = self.TOTAL + self.DELIVERY
         return self.TOTAL
 
     def get_cart_item(self, product, cart_item_id=None, size=None, quantity=0):
