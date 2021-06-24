@@ -1,8 +1,8 @@
 from django.apps import AppConfig
 
 
-class CartConfig(AppConfig):
+class CartsConfig(AppConfig):
     """Configuration for cart application"""
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'cart'
+    name = 'carts'
     verbose_name = 'Корзина'

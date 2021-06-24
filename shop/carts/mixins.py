@@ -1,7 +1,7 @@
 from django.views import View
 
-from cart.models import Cart, CartItem
-from cart.utils import _cart_id
+from carts.models import Cart, CartItem
+from carts.utils import _cart_id
 
 
 class CartMixin(View):

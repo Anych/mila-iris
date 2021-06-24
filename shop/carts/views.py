@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import View
 
-from cart.mixins import CartMixin
+from carts.mixins import CartMixin
 from products.models import Product, Size
 
 
