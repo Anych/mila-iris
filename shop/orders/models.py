@@ -6,7 +6,7 @@ from products.models import Product, Size
 
 
 class Order(models.Model):
-
+    """Model for order."""
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
@@ -38,17 +38,18 @@ class Order(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Обновлено')
 
     def full_name(self):
+        """Function return full name."""
         return f'{self.first_name} {self.last_name}'
 
     def __str__(self):
         return self.first_name
 
     def get_order_url(self):
-        return reverse('order', kwargs={'order_number': self.order_number})
+        return reverse('place_order', kwargs={'order_number': self.order_number})
 
 
 class OrderProduct(models.Model):
-
+    """Model for order products."""
     class Meta:
         verbose_name = 'Заказ на продукт'
         verbose_name_plural = 'Заказы на продукты'

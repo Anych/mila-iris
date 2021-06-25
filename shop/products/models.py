@@ -13,7 +13,7 @@ from products.utils import gen_slug
 
 
 class Product(models.Model):
-    """Main model for products"""
+    """Main model for products."""
     class Meta:
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
@@ -45,23 +45,23 @@ class Product(models.Model):
         return f'{self.article}: {self.brand}'
 
     def product_image1(self):
-        """First image in category_detail template"""
+        """First image in category_detail template."""
         image = ProductGallery.objects.filter(product=self).first()
         return image
 
     def product_image2(self):
-        """Second image in category_detail template"""
+        """Second image in category_detail template."""
         images = ProductGallery.objects.filter(product=self)
         image = images[1]
         return image
 
     def get_product_url(self):
-        """URL for every product in site includes category, subcategory and own product's slug"""
+        """URL for every product in site includes category, subcategory and own product's slug."""
         return reverse('product', kwargs={'category_slug': self.category.parent.slug,
                                           'subcategory_slug': self.category.slug, 'product_slug': self.slug})
 
     def average_review(self):
-        """It is average rating for product"""
+        """It is average rating for product."""
         reviews = ReviewRating.objects.filter(product=self, status=True).aggregate(average=Avg('rating'))
         avg = 0
         if reviews['average'] is not None:
@@ -69,13 +69,13 @@ class Product(models.Model):
         return avg
 
     def get_new_product(self):
-        """Function for calculate if product is created in recent 30 days"""
+        """Function for calculate if product is created in recent 30 days."""
         new = datetime.now(timezone.utc) - self.create_date
         if new.days <= 30:
             return new
 
     def count_review(self):
-        """Function which calculate count of reviews for each product"""
+        """Function which calculate count of reviews for each product."""
         reviews = ReviewRating.objects.filter(product=self, status=True).aggregate(count=Count('id'))
         count = 0
         if reviews['count'] is not None:
@@ -83,31 +83,31 @@ class Product(models.Model):
         return count
 
     def calc_discount_price(self):
-        """If product discount price is null, function calculate it automatically"""
+        """If product discount price is null, function calculate it automatically."""
         self.discount_price = int((int(self.price) * (100 - int(self.discount_amount))) / 100)
         return self.discount_price
 
     def you_save(self):
-        """Function which calculate amount sum, which user save, if product has discount price"""
+        """Function which calculate amount sum, which user save, if product has discount price."""
         if self.discount_price:
             return self.price - self.discount_price
         else:
             return self.price - self.calc_discount_price()
 
     def increment_views(self):
-        """A simple function to calculate product views, which  I should to rewrite"""
+        """A simple function to calculate product views, which  I should to rewrite."""
         self.views += 1
         self.save()
 
     def save(self, *args, **kwargs):
-        """This function I added to automatically generate slug for each product"""
+        """This function I added to automatically generate slug for each product."""
         if not self.slug:
             self.slug = gen_slug(self.category.name, self.brand.name)
         super().save(*args, **kwargs)
 
 
 class ProductGallery(models.Model):
-    """It is model for product images"""
+    """It is model for product images."""
     class Meta:
         verbose_name = 'Галерея'
         verbose_name_plural = 'Галереи'
@@ -117,7 +117,7 @@ class ProductGallery(models.Model):
 
 
 class ProductFeatures(models.Model):
-    """This is model for product additional information """
+    """This is model for product additional information."""
     class Meta:
         verbose_name = 'Дополниетельное поле продукта'
         verbose_name_plural = 'Дополниетельные поля продукта'
@@ -128,7 +128,7 @@ class ProductFeatures(models.Model):
 
 
 class Size(models.Model):
-    """This is model for product sizes"""
+    """This is model for product sizes."""
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт')
     size = models.CharField(max_length=255, verbose_name='Размер')
     stock = models.IntegerField(default=1, verbose_name='Колличество')
@@ -138,7 +138,7 @@ class Size(models.Model):
 
 
 class ReviewRating(models.Model):
-    """This is model for product reviews"""
+    """This is model for product reviews."""
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт')
     user = models.ForeignKey(Account, on_delete=models.CASCADE, verbose_name='Пользователь')
     review = models.TextField(max_length=1500, blank=True, verbose_name='Отзыв')
@@ -153,7 +153,7 @@ class ReviewRating(models.Model):
 
 
 class CustomerQuestion(models.Model):
-    """This is model for product if customer has question about it"""
+    """This is model for product if customer has question about it."""
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт')
     question = models.TextField(max_length=1500, blank=True, verbose_name='Вопрос')
     user = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, verbose_name='Пользователь')

@@ -1,11 +1,17 @@
+import datetime
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import View
+from django.views.generic import View, CreateView
 
 from carts.mixins import CartMixin
+from carts.models import CartItem
+from orders.forms import OrderForm
+from orders.models import Order, OrderProduct
 from products.models import Product, Size
+from accounts.utils import email
 
 
 class CartView(CartMixin, View):
@@ -24,9 +30,13 @@ class CartView(CartMixin, View):
         return render(request, 'store/cart.html', context)
 
 
-class CheckOutView(LoginRequiredMixin, CartMixin, View):
+class CheckOutView(LoginRequiredMixin, CartMixin, CreateView):
     """View for checkout template which calculate total sum."""
+    form_class = OrderForm
+    success_url = 'order_complete'
+
     def get(self, request, *args, **kwargs):
+        """Render checkout page."""
         try:
             if self.request_user.confirm_email:
                 self.calculate_total()
@@ -41,6 +51,72 @@ class CheckOutView(LoginRequiredMixin, CartMixin, View):
         }
         return render(request, 'store/checkout.html', context)
 
+    def post(self, request, *args, **kwargs):
+        """Create new order method."""
+        cart_count = self.cart_items.count()
+        if cart_count <= 0:
+            return redirect('category_main')
+
+        # Get valid form and create fill order table
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            data = Order()
+            data.user = self.request_user
+            data.first_name = form.cleaned_data['first_name']
+            data.last_name = form.cleaned_data['last_name']
+            data.phone = form.cleaned_data['phone']
+            data.email = form.cleaned_data['email']
+            data.address = form.cleaned_data['address']
+            data.country = form.cleaned_data['country']
+            data.state = form.cleaned_data['state']
+            data.city = form.cleaned_data['city']
+            data.order_note = form.cleaned_data['order_note']
+            data.order_total = self.TOTAL
+            data.delivery = self.DELIVERY
+            data.ip = request.META.get('REMOTE_ADDR')
+            data.save()
+
+            # Create order number part
+            yr = int(datetime.date.today().strftime('%Y'))
+            dt = int(datetime.date.today().strftime('%d'))
+            mt = int(datetime.date.today().strftime('%m'))
+            d = datetime.date(yr, mt, dt)
+            current_date = d.strftime('%Y%m%d')
+            order_number = current_date + str(data.id)
+            data.order_number = order_number
+            data.save()
+
+            order = Order.objects.get(user=self.request_user, is_ordered=False, order_number=order_number)
+
+            # Get ordered product to OrderProduct model
+            for item in self.cart_items:
+                order_product = OrderProduct()
+                order_product.order_id = order.id
+                order_product.user_id = request.user.id
+                order_product.size = item.size
+                order_product.product_id = item.product_id
+                order_product.quantity = item.quantity
+                order_product.product_price = item.product.price
+                order_product.ordered = True
+                order_product.save()
+
+                # Reduce product count from warehouse
+                size = Size.objects.get(product=item.product_id, size=item.size)
+                size.stock -= item.quantity
+                size.save()
+
+            # Clean cart
+            CartItem.objects.filter(user=self.request_user).delete()
+
+            # Send message to user
+            email(order=order, user=self.request_user, mail=self.request_user.email)
+
+            # Send message to admin
+            email(order=order.id)
+            return redirect('order_complete')
+        else:
+            return redirect('checkout')
+
 
 class AddToCartView(CartMixin, View):
     """View for adding product to cart."""
@@ -49,7 +125,7 @@ class AddToCartView(CartMixin, View):
         value = request.POST['size']
         size = Size.objects.get(product=product, size=value)
 
-        # checking if product has already added to cart
+        # Сhecking if product has already added to cart
         try:
             cart_item = self.get_cart_item(product=product, size=size)
             cart_item.quantity += 1

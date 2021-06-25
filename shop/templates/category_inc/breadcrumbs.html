@@ -16,6 +16,8 @@
                     <span aria-hidden="true">|</span> <span><a href="{{ subcategory.get_subcategory_url }}" title="К категории">{{ subcategory.name }}</a></span></div>
                 {% elif category %}
                     <span aria-hidden="true">|</span> <span><a href="{{ category.get_category_url }}" title="К категории">{{ category.name }}</a></span></div>
+                {% else %}
+                    <span aria-hidden="true">|</span> <span>Категории</span></div>
                 {% endif %}
             {% endif %}
     </div>

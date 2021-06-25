@@ -5,7 +5,7 @@ from category.models import Category, Brand
 
 
 class CategoryAdmin(DraggableMPTTAdmin):
-    """It is Django-mptt made AdminView"""
+    """It is Django-mptt made AdminView."""
 
     list_display = ('tree_actions', 'indented_title', 'slug')
     list_display_links = ('indented_title',)

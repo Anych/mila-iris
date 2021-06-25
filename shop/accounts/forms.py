@@ -1,15 +1,12 @@
 from django import forms
 from django.contrib.auth.password_validation import get_default_password_validators
 from django.core.exceptions import ValidationError
-from snowpenguin.django.recaptcha3.fields import ReCaptchaField
 
 from accounts.models import Account, UserProfile
 
 
 class RegistrationForm(forms.ModelForm):
-
-    captcha = ReCaptchaField()
-
+    """Form for registration in site. Which check and validate password."""
     class Meta:
         model = Account
         fields = ['first_name', 'last_name', 'phone_number', 'email', 'password', 'captcha']
@@ -33,9 +30,11 @@ class RegistrationForm(forms.ModelForm):
         cleaned_data = super(RegistrationForm, self).clean()
         password = cleaned_data.get('password')
         confirm_password = cleaned_data.get('confirm_password')
+        # check password
         if password != confirm_password:
             raise forms.ValidationError('Пароли не совпадают')
         errors = []
+        # validate password
         if password_validators is None:
             password_validators = get_default_password_validators()
         for validator in password_validators:
@@ -54,14 +53,14 @@ class RegistrationForm(forms.ModelForm):
 
 
 class UserForm(forms.ModelForm):
-
+    """Form for user main information in dashboard."""
     class Meta:
         model = Account
         fields = ('first_name', 'last_name', 'phone_number', 'email')
 
 
 class UserProfileForm(forms.ModelForm):
-
+    """Form for user additional information in dashboard."""
     class Meta:
         model = UserProfile
         fields = ('address_line1', 'address_line2', 'city', 'state', 'country', 'profile_picture')

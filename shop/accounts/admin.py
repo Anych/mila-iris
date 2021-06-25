@@ -5,7 +5,7 @@ from accounts.models import Account, UserProfile
 
 
 class AccountAdmin(UserAdmin):
-
+    """Admin View for accounts."""
     list_display = ('email', 'first_name', 'last_name', 'last_login', 'date_joined', 'confirm_email')
     list_display_links = ('email', 'first_name', 'last_name')
     readonly_fields = ('last_login', 'date_joined')
@@ -17,7 +17,7 @@ class AccountAdmin(UserAdmin):
 
 
 class UserProfileAdmin(admin.ModelAdmin):
-
+    """Admin View for users profile."""
     list_display = ('user', 'city', 'state', 'country')
 
 

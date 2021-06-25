@@ -5,9 +5,9 @@ from smartfields import fields
 
 
 class MyAccountManager(BaseUserManager):
-    """Account manager"""
+    """Account manager."""
     def create_user(self, first_name, last_name, email, password=None):
-        """Creates and saves a new user"""
+        """Creates and saves a new user."""
         if not email:
             raise ValueError('Введите e-mail')
         user = self.model(
@@ -22,7 +22,7 @@ class MyAccountManager(BaseUserManager):
         return user
 
     def create_superuser(self, first_name, last_name, email, password):
-        """Creates and saves a new super user"""
+        """Creates and saves a new super user."""
         user = self.create_user(
             email=self.normalize_email(email),
             first_name=first_name,
@@ -38,7 +38,7 @@ class MyAccountManager(BaseUserManager):
 
 
 class Account(AbstractBaseUser):
-    """Custom user model that supports using email instead of username"""
+    """Custom user model that supports using email instead of username."""
     class Meta:
         verbose_name = 'Аккаунт'
         verbose_name_plural = 'Аккаунты'
@@ -78,7 +78,7 @@ class Account(AbstractBaseUser):
 
 
 class UserProfile(models.Model):
-    """Create the user profile to user"""
+    """Create the user profile to user."""
     class Meta:
         verbose_name = 'Профайл'
         verbose_name_plural = 'Профайлы'

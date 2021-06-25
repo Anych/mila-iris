@@ -2,7 +2,7 @@ from category.mixins import CategoryMixin
 
 
 class CategoryMainView(CategoryMixin):
-    """View for main page of categories don't take any arguments and shows all products in the site"""
+    """View for main page of categories don't take any arguments and shows all products in the site."""
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = self.mixin_context()
@@ -10,7 +10,7 @@ class CategoryMainView(CategoryMixin):
 
 
 class SalesMainView(CategoryMixin):
-    """View for main sales page of categories don't take any arguments and shows all sale products in the site"""
+    """View for main sales page of categories don't take any arguments and shows all sale products in the site."""
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = self.mixin_context(sales=True)
@@ -18,7 +18,7 @@ class SalesMainView(CategoryMixin):
 
 
 class CategoryView(CategoryMixin):
-    """View for categories from the next list: clothes, shoes, accessories"""
+    """View for categories from the next list: clothes, shoes, accessories."""
 
     def get_context_data(self, *, object_list=None, **kwargs):
         category = super().get_queryset(**kwargs).filter(slug=self.kwargs['category_slug']).first()
@@ -27,7 +27,7 @@ class CategoryView(CategoryMixin):
 
 
 class SubCategoryView(CategoryMixin):
-    """View for subcategories which are descending from the main categories"""
+    """View for subcategories which are descending from the main categories."""
 
     def get_context_data(self, *, object_list=None, **kwargs):
         subcategory = super().get_queryset(**kwargs).filter(slug=self.kwargs['subcategory_slug']).first()
@@ -36,7 +36,7 @@ class SubCategoryView(CategoryMixin):
 
 
 class SalesCategoryView(CategoryMixin):
-    """View for sales categories from the next list: clothes, shoes, accessories"""
+    """View for sales categories from the next list: clothes, shoes, accessories."""
 
     def get_context_data(self, *, object_list=None, **kwargs):
         category = super().get_queryset(**kwargs).filter(slug=self.kwargs['category_slug']).first()
@@ -45,7 +45,7 @@ class SalesCategoryView(CategoryMixin):
 
 
 class SalesSubCategoryView(CategoryMixin):
-    """View for sales subcategories which are descending from the main categories"""
+    """View for sales subcategories which are descending from the main categories."""
 
     def get_context_data(self, *, object_list=None, **kwargs):
         subcategory = super().get_queryset(**kwargs).filter(slug=self.kwargs['subcategory_slug']).first()

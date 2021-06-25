@@ -4,16 +4,19 @@ from products.models import Product, ProductGallery, Size, ProductFeatures
 
 
 class ProductGalleryInline(admin.StackedInline):
+    """Inline for product retrieve images."""
     model = ProductGallery
     extra = 2
 
 
 class ProductSizeInline(admin.StackedInline):
+    """Inline for product retrieve sizes."""
     model = Size
     extra = 1
 
 
 class ProductFeatureInline(admin.StackedInline):
+    """Inline for product retrieve features."""
     model = ProductFeatures
     extra = 1
 
@@ -21,7 +24,7 @@ class ProductFeatureInline(admin.StackedInline):
 class ProductAdmin(admin.ModelAdmin):
     """
     In product model only ProductAdmin has interface for changing.
-    Another models can fill only throw this interface
+    Another models can fill only throw this interface.
     """
     list_display = ('article', 'brand', 'category', 'price', 'is_recommend')
     list_display_links = ('article', 'brand')

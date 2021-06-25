@@ -27,7 +27,7 @@ class CartMixin(View):
         return super().dispatch(request, *args, **kwargs)
 
     def calculate_total(self):
-        """Method which calculate total sum for order """
+        """Method which calculate total sum for order."""
         for item in self.cart_items:
             if item.product.is_discount:
                 if item.product.discount_price:
@@ -44,19 +44,19 @@ class CartMixin(View):
     def get_cart_item(self, product, cart_item_id=None, size=None, quantity=0):
         """Get or create cart item and check if user is authenticated."""
         if self.request_user.is_authenticated:
-            if size is not None:
-                cart_item = CartItem.objects.get(product=product, user=self.request_user, size=size)
-            elif quantity == 1:
+            if quantity == 1:
                 cart_item = CartItem.objects.create(product=product,
                                                     quantity=quantity, user=self.request_user, size=size)
+            elif size is not None:
+                cart_item = CartItem.objects.get(product=product, user=self.request_user, size=size)
             else:
                 cart_item = CartItem.objects.get(product=product, user=self.request_user, id=cart_item_id)
 
         else:
-            if size is not None:
-                cart_item = CartItem.objects.get(product=product, cart=self.cart, size=size)
-            elif quantity == 1:
+            if quantity == 1:
                 cart_item = CartItem.objects.create(product=product, quantity=quantity, cart=self.cart, size=size)
+            elif size is not None:
+                cart_item = CartItem.objects.get(product=product, cart=self.cart, size=size)
             else:
                 cart_item = CartItem.objects.get(product=product, cart=self.cart, id=cart_item_id)
         return cart_item
