@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy
 from django.views.generic import View, CreateView
 
 from carts.mixins import CartMixin
@@ -33,7 +34,6 @@ class CartView(CartMixin, View):
 class CheckOutView(LoginRequiredMixin, CartMixin, CreateView):
     """View for checkout template which calculate total sum."""
     form_class = OrderForm
-    success_url = 'order_complete'
 
     def get(self, request, *args, **kwargs):
         """Render checkout page."""
@@ -57,7 +57,7 @@ class CheckOutView(LoginRequiredMixin, CartMixin, CreateView):
         if cart_count <= 0:
             return redirect('category_main')
 
-        # Get valid form and create fill order table
+        # Get valid form and fill order table
         form = OrderForm(request.POST)
         if form.is_valid():
             data = Order()
@@ -125,7 +125,7 @@ class AddToCartView(CartMixin, View):
         value = request.POST['size']
         size = Size.objects.get(product=product, size=value)
 
-        # Сhecking if product has already added to cart
+        # Checking if product has already added to cart
         try:
             cart_item = self.get_cart_item(product=product, size=size)
             cart_item.quantity += 1
