@@ -7,13 +7,14 @@ from django.utils.http import urlsafe_base64_encode
 
 class Emails:
     """Email class for sending emails."""
-    def __init__(self, order=None, user=None, email=None, question=None, product_url=None, pk=None):
+    def __init__(self, order=None, user=None, email=None, question=None, product_url=None, pk=None, forgot=False):
         self.order = order
         self.user = user
         self.email = email
         self.question = question
         self.product_url = product_url
         self.pk = pk
+        self.forgot = forgot
         self.mail_subject = None
         self.message = None
         self.redirect_to_function()
@@ -27,8 +28,11 @@ class Emails:
             elif self.order is not None:
                 self.order_email()
 
-            else:
-                self.confirm_email()
+            elif self.pk is not None:
+                if self.forgot:
+                    self.forgot_password()
+                else:
+                    self.confirm_email()
 
         else:
             self.new_order_email()
@@ -64,6 +68,16 @@ class Emails:
             'uid': urlsafe_base64_encode(force_bytes(self.pk)),
             'token': default_token_generator.make_token(self.user),
             'email': self.email,
+        })
+        self.send_email_to_user()
+
+    def forgot_password(self):
+        """Sending email to do a new password."""
+        self.mail_subject = 'Восстановление пароля'
+        self.message = render_to_string('accounts/reset_password_email.html', {
+            'user': self.user,
+            'uid': urlsafe_base64_encode(force_bytes(self.pk)),
+            'token': default_token_generator.make_token(self.user)
         })
         self.send_email_to_user()
 

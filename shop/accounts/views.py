@@ -1,10 +1,12 @@
 from django.contrib import auth, messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.tokens import default_token_generator
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import CreateView
 
 from accounts.forms import RegistrationForm
+from accounts.mixins import TokenMixinView
 from accounts.models import Account
 from accounts.utils import _profile, _redirect_to_next_page
 from carts.utils import _move_cart_when_authenticate
@@ -25,10 +27,9 @@ class RegisterView(CreateView):
     def post(self, request, *args, **kwargs):
         """
         Register for new user and after create profile
-        for him and sending email. Try to move his cart
-        items to new cart.
+        for him. Try to move his cart items to new cart.
         """
-        form = RegistrationForm(request.POST or None)
+        form = RegistrationForm(request.POST)
 
         if form.is_valid():
             # create new user
@@ -42,13 +43,10 @@ class RegisterView(CreateView):
                                                email=email,
                                                password=password)
             user.phone_number = phone_number
-
-            # Create profile for user and save it
-            _profile(user)
             user.save()
 
-            # Email confirmation
-            Emails(user=user, email=email, pk=user.pk)
+            # Create profile for user
+            _profile(user) # TODO
 
             user = auth.authenticate(request=request, email=email, password=password)
 
@@ -62,7 +60,6 @@ class RegisterView(CreateView):
 
 
 class LoginView(View):
-
     """View for logging in the site."""
     def get(self, request, *args, **kwargs):
         """Render the login template."""
@@ -86,7 +83,7 @@ class LoginView(View):
             try:
                 _redirect_to_next_page(request)
             except:
-                return redirect('store')
+                return redirect('category_main')
 
         else:
             messages.error(request, 'Неправильно введена почта или пароль')
@@ -94,44 +91,92 @@ class LoginView(View):
 
 
 class LogoutView(LoginRequiredMixin, View):
-
+    """Logout view, only for has already logged in users."""
     def get(self, request, *args, **kwargs):
-        """Logout view, only for has already logged in users."""
         auth.logout(request)
         messages.success(request, 'Вы успешно вышли из системы')
         return redirect('login')
 
 
-class ConfirmAccountView(View):
-
+class ForgotPasswordView(View):
+    """View for registered user, if forgot password."""
     def get(self, request, *args, **kwargs):
-        try:
-            uid = urlsafe_base64_decode(kwargs['uidb64']).decode()
-            user = Account._default_manager.get(pk=uid)
-        except(TypeError, ValueError, OverflowError, Account.DoesNotExist):
-            user = None
+        return render(request, 'accounts/forgot_password.html')
 
-        if user is not None and default_token_generator.check_token(user, token):
-            user.email = email
-            user.confirm_email = True
+    def post(self, request, *args, **kwargs):
+        email = request.POST['email']
+        if Account.objects.filter(email=email).exists():
+            user = Account.objects.get(email__exact=email)
+            Emails(user=user, email=email, pk=user.pk, forgot=True).forgot_password()
+            messages.success(request, 'Письмо с инструкцией отправлено на вашу почту')
+            return redirect('login')
+
+        else:
+            messages.error(request, 'Пользователь с такой почтой не зарегистрирован!')
+            return redirect('forgot_password')
+
+
+class ResetPasswordView(View):
+    """View for resetting password."""
+    def get(self, request, *args, **kwargs):
+        return render(request, 'accounts/reset_password.html')
+
+    def post(self, request, *args, **kwargs):
+        password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
+        if password == confirm_password:
+            uid = request.session.get('uid')
+            user = Account.objects.get(pk=uid)
+            user.set_password(password)
             user.save()
-            messages.success(request, 'Congratulations! Your account is activated.')
+            messages.success(request, 'Пароль успешно сброшен!')
+            return redirect('login')
+
+
+class ChangePasswordView(View):
+    """View if user want to change password in user profile form."""
+    def post(self, request, *args, **kwargs):
+        current_password = request.POST['current_password']
+        new_password = request.POST['new_password']
+        confirm_password = request.POST['confirm_password']
+
+        user = Account.objects.get(pk__exact=request.user.pk)
+        if new_password == confirm_password:
+            success = user.check_password(current_password)
+            if success:
+                user.set_password(new_password)
+                user.save()
+                messages.success(request, 'Ваш пароль успешно обновлён!')
+                return redirect('dashboard')
+            else:
+                messages.error(request, 'Текущий пароль введен не правильно.')
+                return redirect('dashboard')
+        else:
+            messages.error(request, 'Введенные пароли не совпадают.')
+            return redirect('dashboard')
+
+
+class ResetPasswordValidateView(TokenMixinView, View):
+    """View which validate information from email and after resetting password."""
+    def get(self, request, *args, **kwargs):
+        if self.user is not None and default_token_generator.check_token(self.user, kwargs['token']):
+            request.session['uid'] = self.uid
+            messages.success(request, 'Пожалуйста сбросьте Ваш пароль')
+            return redirect('reset_password')
+        else:
+            messages.error(request, 'Ссылка устарела')
+            return redirect('login')
+
+
+class ConfirmAccountView(TokenMixinView, View):
+    """View which validate information from email and after confirm email."""
+    def get(self, request, *args, **kwargs):
+        if self.user is not None and default_token_generator.check_token(self.user, kwargs['token']):
+            self.user.email = kwargs['email']
+            self.user.confirm_email = True
+            self.user.save()
+            messages.success(request, 'Поздравляем, Вы успешно подтвердили свою почту!')
             return redirect('login')
         else:
-            messages.error(request, 'Invalid activation link')
+            messages.error(request, 'Ошибка активации!')
             return redirect('register')
-
-def resetpassword_validate(request, uidb64, token):
-    try:
-        uid = urlsafe_base64_decode(uidb64).decode()
-        user = Account._default_manager.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, Account.DoesNotExist):
-        user = None
-
-    if user is not None and default_token_generator.check_token(user, token):
-        request.session['uid'] = uid
-        messages.success(request, 'Please reset your password')
-        return redirect('resetPassword')
-    else:
-        messages.error(request, 'This link has been expired!')
-        return redirect('login')

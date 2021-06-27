@@ -65,5 +65,6 @@ class UserProfileForm(forms.ModelForm):
         model = UserProfile
         fields = ('address', 'city', 'state', 'country', 'profile_picture')
 
-    profile_picture = forms.ImageField(required=False, error_messages={'Ошибка': "Можно загружать только картинки"},
+    profile_picture = forms.ImageField(required=False,
+                                       error_messages={'Ошибка': "Можно загружать только картинки"},
                                        widget=forms.FileInput)

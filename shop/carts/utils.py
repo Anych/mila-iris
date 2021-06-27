@@ -20,3 +20,4 @@ def _move_cart_when_authenticate(request, user):
             item.save()
     except:
         pass
+# todo
