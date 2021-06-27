@@ -7,14 +7,16 @@ from accounts.views import (
     ConfirmAccountView,
     ForgotPasswordView,
     ResetPasswordValidateView,
-    ResetPasswordView
+    ResetPasswordView,
+    DashboardView,
+    ChangePasswordView,
 )
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
-
+    path('dashboard/', DashboardView.as_view(), name='dashboard'),
     path('activate/<uidb64>/<token>/<email>/', ConfirmAccountView.as_view(), name='activate'),
 
     path('forgot-password/', ForgotPasswordView.as_view(), name='forgot_password'),
@@ -22,4 +24,5 @@ urlpatterns = [
     path('reset_password_validate/<uidb64>/<token>/',
          ResetPasswordValidateView.as_view(),
          name='reset_password_validate'),
+    path('change_password/', ChangePasswordView.as_view(), name='change_password'),
 ]

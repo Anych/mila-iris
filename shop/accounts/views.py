@@ -3,13 +3,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.tokens import default_token_generator
 from django.shortcuts import render, redirect
 from django.views import View
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DetailView
 
-from accounts.forms import RegistrationForm
-from accounts.mixins import TokenMixinView
-from accounts.models import Account
+from accounts.forms import RegistrationForm, UserForm, UserProfileForm
+from accounts.mixins import TokenMixin
+from accounts.models import Account, UserProfile
 from accounts.utils import _profile, _redirect_to_next_page
 from carts.utils import _move_cart_when_authenticate
+from orders.models import Order
 from shop.emails import Emails
 
 
@@ -46,7 +47,7 @@ class RegisterView(CreateView):
             user.save()
 
             # Create profile for user
-            _profile(user) # TODO
+            _profile(user)
 
             user = auth.authenticate(request=request, email=email, password=password)
 
@@ -117,7 +118,7 @@ class ForgotPasswordView(View):
 
 
 class ResetPasswordView(View):
-    """View for resetting password."""
+    """View for resetting password, after user successfully validate information from email."""
     def get(self, request, *args, **kwargs):
         return render(request, 'accounts/reset_password.html')
 
@@ -133,7 +134,7 @@ class ResetPasswordView(View):
             return redirect('login')
 
 
-class ChangePasswordView(View):
+class ChangePasswordView(LoginRequiredMixin, View):
     """View if user want to change password in user profile form."""
     def post(self, request, *args, **kwargs):
         current_password = request.POST['current_password']
@@ -147,7 +148,7 @@ class ChangePasswordView(View):
                 user.set_password(new_password)
                 user.save()
                 messages.success(request, 'Ваш пароль успешно обновлён!')
-                return redirect('dashboard')
+                return redirect('login')
             else:
                 messages.error(request, 'Текущий пароль введен не правильно.')
                 return redirect('dashboard')
@@ -156,7 +157,7 @@ class ChangePasswordView(View):
             return redirect('dashboard')
 
 
-class ResetPasswordValidateView(TokenMixinView, View):
+class ResetPasswordValidateView(TokenMixin, View):
     """View which validate information from email and after resetting password."""
     def get(self, request, *args, **kwargs):
         if self.user is not None and default_token_generator.check_token(self.user, kwargs['token']):
@@ -168,7 +169,7 @@ class ResetPasswordValidateView(TokenMixinView, View):
             return redirect('login')
 
 
-class ConfirmAccountView(TokenMixinView, View):
+class ConfirmAccountView(TokenMixin, View):
     """View which validate information from email and after confirm email."""
     def get(self, request, *args, **kwargs):
         if self.user is not None and default_token_generator.check_token(self.user, kwargs['token']):
@@ -180,3 +181,42 @@ class ConfirmAccountView(TokenMixinView, View):
         else:
             messages.error(request, 'Ошибка активации!')
             return redirect('register')
+
+
+class DashboardView(DetailView):
+    """View for users dashboard where they can see their previous orders and change self information."""
+    model = UserProfile
+    template_name = 'accounts/dashboard.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        """Create new user profile if user logged by social account."""
+        self.request_user = request.user
+        try:
+            self.user_profile = UserProfile.objects.get(user=self.request_user)
+        except Exception:
+            _profile(self.request_user)
+            self.user_profile = UserProfile.objects.get(user=self.request_user)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        orders = Order.objects.order_by('-created_at').filter(user_id=self.request_user.id, is_ordered=True)
+        orders_count = orders.count()
+        user_form = UserForm(instance=self.request_user)
+        profile_form = UserProfileForm(instance=self.user_profile)
+        context = {
+            'orders': orders,
+            'orders_count': orders_count,
+            'user_form': user_form,
+            'profile_form': profile_form,
+            'user_profile': self.user_profile,
+        }
+        return render(request, 'accounts/dashboard.html', context)
+
+    def post(self, request, *args, **kwargs):
+        user_form = UserForm(request.POST, instance=self.request_user)
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=self.user_profile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Ваши данные успешно обновлены!')
+            return redirect('dashboard')

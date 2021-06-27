@@ -4,7 +4,7 @@ from django.views import View
 from accounts.models import Account
 
 
-class TokenMixinView(View):
+class TokenMixin(View):
     """View which do some code for more easier validate information from email."""
     def dispatch(self, request, *args, **kwargs):
         try:

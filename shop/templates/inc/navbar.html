@@ -84,7 +84,7 @@
                     </div>
                     <div id="settingsBox">
                     	<div class="customer-links">
-                            <p class="text-center">Здравствуйте, <a href="">{{ user.first_name }}</a></p>
+                            <p class="text-center">Здравствуйте, <a href="{% url 'dashboard' %}">{{ user.first_name }}</a></p>
                             <hr>
                             <p><a href="{% url 'logout' %}" class="btn">Выйти</a></p>
                         </div>
