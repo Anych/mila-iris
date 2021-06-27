@@ -45,11 +45,11 @@
                             {% for cart_item in cart_items %}
                             <tr class="cart__row border-bottom line1 cart-flex border-top">
                                 <td class="cart__image-wrapper cart-flex-item">
-                                    <a href="{{ cart_item.product.get_product_url }}"><img class="cart__image" src="{{ cart_item.product.product_image1.image.url }}" alt="{{ cart_item.product.name }}"></a>
+                                    <a href="{{ cart_item.product.get_absolute_url_url }}"><img class="cart__image" src="{{ cart_item.product.product_image1.image.url }}" alt="{{ cart_item.product.name }}"></a>
                                 </td>
                                 <td class="cart__meta small--text-left cart-flex-item">
                                     <div class="list-view-item__title">
-                                        <a href="{{ cart_item.product.get_product_url }}">{{ cart_item.product.category.name_for_product }}: {{ cart_item.product.brand }}{% if cart_item.product.model %} - {{ cart_item.product.model }}{% endif %}.
+                                        <a href="{{ cart_item.product.get_absolute_url_url }}">{{ cart_item.product.category.name_for_product }}: {{ cart_item.product.brand }}{% if cart_item.product.model %} - {{ cart_item.product.model }}{% endif %}.
                                             <p>{{ cart_item.product.color }}</p></a>
                                     </div>
                                     <div class="cart__meta-text">

@@ -2,12 +2,12 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.views.generic import DetailView, CreateView
 
-from accounts.utils import email
 from category.models import Category
 from orders.models import OrderProduct
 from products.forms import ReviewForm, QuestionForm
 from products.mixins import ProductViewMixin
 from products.models import Product, ReviewRating, Size, ProductGallery, ProductFeatures, CustomerQuestion
+from shop.emails import Emails
 
 
 class ProductView(DetailView):
@@ -101,5 +101,5 @@ class AskQuestionView(ProductViewMixin, CreateView):
                 data.user_id = None
             data.save()
             messages.success(request, 'Спасибо! Ваш вопрос был отправлен.')
-            email(user=data.name, mail=data.email, question=data.question, product_url=self.url)
+            Emails(user=data.name, email=data.email, question=data.question, product_url=self.url)
             return redirect(self.url)

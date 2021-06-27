@@ -55,7 +55,7 @@ class Product(models.Model):
         image = images[1]
         return image
 
-    def get_product_url(self):
+    def get_absolute_url(self):
         """URL for every product in site includes category, subcategory and own product's slug."""
         return reverse('product', kwargs={'category_slug': self.category.parent.slug,
                                           'subcategory_slug': self.category.slug, 'product_slug': self.slug})

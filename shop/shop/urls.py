@@ -10,8 +10,9 @@ handler403 = views.PermissionDeniedView.as_view()
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('allauth.urls')),
+    path('social-accounts/', include('allauth.urls')),
 
+    path('accounts/', include('accounts.urls')),
     path('shop/', include('category.urls')),
     path('products/', include('products.urls')),
     path('carts/', include('carts.urls')),

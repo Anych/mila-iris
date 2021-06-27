@@ -4,7 +4,6 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse_lazy
 from django.views.generic import View, CreateView
 
 from carts.mixins import CartMixin
@@ -12,7 +11,7 @@ from carts.models import CartItem
 from orders.forms import OrderForm
 from orders.models import Order, OrderProduct
 from products.models import Product, Size
-from accounts.utils import email
+from shop.emails import Emails
 
 
 class CartView(CartMixin, View):
@@ -109,10 +108,10 @@ class CheckOutView(LoginRequiredMixin, CartMixin, CreateView):
             CartItem.objects.filter(user=self.request_user).delete()
 
             # Send message to user
-            email(order=order, user=self.request_user, mail=self.request_user.email)
+            Emails(order=order, user=self.request_user, email=self.request_user.email)
 
             # Send message to admin
-            email(order=order.id)
+            Emails(order=order.id)
             return redirect('order_complete')
         else:
             return redirect('checkout')

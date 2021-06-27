@@ -52,6 +52,6 @@ class Brand(models.Model):
     def __str__(self):
         return self.name
 
-    def get_brand_url(self):
+    def get_absolute_url(self):
         """URL for brands."""
         return reverse('brands', kwargs={'brand_slug': self.slug})

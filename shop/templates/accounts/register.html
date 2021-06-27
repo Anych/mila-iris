@@ -1,11 +1,8 @@
 {% extends 'base.html' %}
 
-{% load static recaptcha3 socialaccount %}
+{% load static socialaccount %}
 
-{% block style %}	<link rel="stylesheet" href="{% static 'assets/css/bootstrap-social.css' %}">
-					{% recaptcha_init %}
-					{% recaptcha_ready action_name='homepage' %}
-{% endblock style %}
+{% block style %} <link rel="stylesheet" href="{% static 'assets/css/bootstrap-social.css' %}"> {% endblock style %}
 
 {% block title %}Регистрация{% endblock %}
 

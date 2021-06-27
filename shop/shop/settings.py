@@ -24,6 +24,9 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
+
     'smartfields',
     'debug_toolbar',
     'rest_framework',
@@ -138,9 +141,10 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 
 SITE_ID = config('SITE_ID', cast=int)
 
-LOGIN_REDIRECT_URL = 'store'
+LOGIN_REDIRECT_URL = 'category_main'
 
 ACCOUNT_EMAIL_REQUIRED = False
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = None
 ACCOUNT_UNIQUE_EMAIL = False
+ACCOUNT_FORMS = {'signup': 'accounts.forms.RegistrationForm'}

@@ -1,8 +1,5 @@
 from time import time
 
-from django.core.mail import EmailMessage
-from django.template.loader import render_to_string
-
 from uuslug import slugify
 
 

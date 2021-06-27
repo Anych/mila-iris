@@ -9,7 +9,7 @@ class RegistrationForm(forms.ModelForm):
     """Form for registration in site. Which check and validate password."""
     class Meta:
         model = Account
-        fields = ['first_name', 'last_name', 'phone_number', 'email', 'password', 'captcha']
+        fields = ['first_name', 'last_name', 'phone_number', 'email', 'password']
 
     def __init__(self, *args, **kwargs):
         super(RegistrationForm, self).__init__(*args, **kwargs)
@@ -30,11 +30,11 @@ class RegistrationForm(forms.ModelForm):
         cleaned_data = super(RegistrationForm, self).clean()
         password = cleaned_data.get('password')
         confirm_password = cleaned_data.get('confirm_password')
-        # check password
+        # Check password
         if password != confirm_password:
             raise forms.ValidationError('Пароли не совпадают')
         errors = []
-        # validate password
+        # Validate password
         if password_validators is None:
             password_validators = get_default_password_validators()
         for validator in password_validators:
@@ -63,7 +63,7 @@ class UserProfileForm(forms.ModelForm):
     """Form for user additional information in dashboard."""
     class Meta:
         model = UserProfile
-        fields = ('address_line1', 'address_line2', 'city', 'state', 'country', 'profile_picture')
+        fields = ('address', 'city', 'state', 'country', 'profile_picture')
 
     profile_picture = forms.ImageField(required=False, error_messages={'Ошибка': "Можно загружать только картинки"},
                                        widget=forms.FileInput)

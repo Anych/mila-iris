@@ -44,7 +44,7 @@ class Order(models.Model):
     def __str__(self):
         return self.first_name
 
-    def get_order_url(self):
+    def get_absolute_url(self):
         return reverse('place_order', kwargs={'order_number': self.order_number})
 
 
