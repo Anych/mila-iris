@@ -3,10 +3,8 @@ from django.urls import path
 from category.views import (
     CategoryMainView,
     SalesMainView,
-
     CategoryView,
     SubCategoryView,
-
     SalesCategoryView,
     SalesSubCategoryView,
 )

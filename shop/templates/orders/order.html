@@ -35,22 +35,18 @@
                             {% for order_product in order_products %}
                                 <tr class="cart__row border-bottom line1 cart-flex border-top">
                                     <td class="cart__image-wrapper cart-flex-item">
-                                        <a href="{{ order_product.product.get_absolute_url }}"><img class="cart__image" src="{{ order_product.product.img1.url }}" alt="{{ cart_item.product.name }}"></a>
+                                        <a href="{{ order_product.product.get_absolute_url }}"><img class="cart__image" src="{{ order_product.product.product_image1.image.url }}" alt="{{ order_product.product.category.name_for_product }}: {{ order_product.product.brand }}"></a>
                                     </td>
                                     <td class="cart__meta small--text-left cart-flex-item">
-                                        <div class="list-view-item__title">
-                                            <a href="#">{{ order_product.product.name }}</a>
+                                        <div class="list-view-item__title text-center">
+                                            <a href="{{ order_product.product.get_absolute_url }}">{{ order_product.product.category.name_for_product }}: {{ order_product.product.brand }}</a>
                                         </div>
-                                    {% if order_product.variations.all %}
-                                    {% for item in order_product.variations.all %}
-                                    <div class="cart__meta-text">
-                                        {{ item.variation_category | capfirst }}: {{ item.variation_value | capfirst }} <br>
+                                    <div class="cart__meta-text text-center">
+                                        {{ order_product.size }}
                                     </div>
-                                    {% endfor %}
-                                    {% endif %}
                                     </td>
                                     <td class="cart__price-wrapper cart-flex-item text-center">
-                                        <span class="money">&#8376; {{ order_product.product.price | intcomma }}</span>
+                                        <span class="money">&#8376; {{ order_product.product_price | intcomma }}</span>
                                     </td>
                                     <td class="text-center">
                                         <span>Единиц товара: {{ order_product.quantity }}</span>

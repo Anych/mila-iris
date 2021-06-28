@@ -1,8 +1,9 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.views import View
-from django.views.generic import CreateView
+from django.views.generic import DetailView
 
-from orders.forms import OrderForm
+from orders.models import Order
 
 
 class OrderCompleteView(View):
@@ -12,13 +13,16 @@ class OrderCompleteView(View):
         return render(request, 'orders/order_complete.html')
 
 
-# @login_required(login_url='login')
-# def orders(request, order_number):
-#
-#     order = Order.objects.get(order_number=order_number)
-#     order_products = order.orderproduct_set.all()
-#     context = {
-#         'order': order,
-#         'order_products': order_products,
-#     }
-#     return render(request, 'orders/order.html', context)
+class OrdersView(LoginRequiredMixin, DetailView):
+    """View for see already done orders."""
+    model = Order
+    slug_url_kwarg = 'order_number'
+
+    def get(self, request, *args, **kwargs):
+        order = Order.objects.get(order_number=kwargs['order_number'])
+        order_products = order.orderproduct_set.all()
+        context = {
+            'order': order,
+            'order_products': order_products,
+        }
+        return render(request, 'orders/order.html', context)

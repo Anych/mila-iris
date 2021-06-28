@@ -45,7 +45,7 @@ class Order(models.Model):
         return self.first_name
 
     def get_absolute_url(self):
-        return reverse('place_order', kwargs={'order_number': self.order_number})
+        return reverse('order', kwargs={'order_number': self.order_number})
 
 
 class OrderProduct(models.Model):
@@ -68,4 +68,4 @@ class OrderProduct(models.Model):
         return f'{self.product.article} - {self.product.category.name}: {self.product.brand}'
 
     def sub_total(self):
-        return self.product.price * self.quantity
+        return self.product_price * self.quantity

@@ -86,6 +86,9 @@ class CheckOutView(LoginRequiredMixin, CartMixin, CreateView):
             data.save()
 
             order = Order.objects.get(user=self.request_user, is_ordered=False, order_number=order_number)
+            order.is_ordered = True
+            order.order_total = self.calculate_total()
+            order.save()
 
             # Get ordered product to OrderProduct model
             for item in self.cart_items:
@@ -95,7 +98,13 @@ class CheckOutView(LoginRequiredMixin, CartMixin, CreateView):
                 order_product.size = item.size
                 order_product.product_id = item.product_id
                 order_product.quantity = item.quantity
-                order_product.product_price = item.product.price
+                if item.product.is_discount:
+                    if item.product.discount_price:
+                        order_product.product_price = item.product.discount_price
+                    else:
+                        order_product.product_price = item.product.calc_discount_price()
+                else:
+                    order_product.product_price = item.product.price
                 order_product.ordered = True
                 order_product.save()
 
