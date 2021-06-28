@@ -48,13 +48,13 @@ class RegisterView(CreateView):
 
             # Create profile for user
             _profile(user)
-
             user = auth.authenticate(request=request, email=email, password=password)
 
             # Login user and move his cart
             if user is not None:
                 _move_cart_when_authenticate(request, user)
                 auth.login(request, user)
+                Emails(user=user, pk=user.pk, email=user.email, command='register')
                 return redirect('category_main')
         context = {'form': form}
         return render(request, 'accounts/register.html', context)
@@ -99,6 +99,27 @@ class LogoutView(LoginRequiredMixin, View):
         return redirect('login')
 
 
+class ConfirmEmailView(View):
+    """View which render page for confirmation email."""
+    def dispatch(self, request, *args, **kwargs):
+        self.request_user = request.user
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        """Render page for users who already have or haven't an email."""
+        if self.request_user.email:
+            Emails(user=self.request_user, pk=self.request_user.pk, email=self.request_user.email)
+            return render(request, 'accounts/confirm_email.html')
+        else:
+            return render(request, 'accounts/confirm_email.html', context={'user': self.request_user})
+
+    def post(self, request, *args, **kwargs):
+        """If users registered by social account and doesn't have an email."""
+        email = request.POST['email']
+        Emails(user=self.request_user, pk=self.request_user.pk, email=email, command='confirm')
+        return redirect('category_main')
+
+
 class ForgotPasswordView(View):
     """View for registered user, if forgot password."""
     def get(self, request, *args, **kwargs):
@@ -108,7 +129,7 @@ class ForgotPasswordView(View):
         email = request.POST['email']
         if Account.objects.filter(email=email).exists():
             user = Account.objects.get(email__exact=email)
-            Emails(user=user, email=email, pk=user.pk, forgot=True).forgot_password()
+            Emails(user=user, email=email, pk=user.pk, command='forgot').forgot_password()
             messages.success(request, 'Письмо с инструкцией отправлено на вашу почту')
             return redirect('login')
 
@@ -177,7 +198,10 @@ class ConfirmAccountView(TokenMixin, View):
             self.user.confirm_email = True
             self.user.save()
             messages.success(request, 'Поздравляем, Вы успешно подтвердили свою почту!')
-            return redirect('login')
+            if kwargs['command'] == 'register':
+                return redirect('category_main')
+            else:
+                return redirect('checkout')
         else:
             messages.error(request, 'Ошибка активации!')
             return redirect('register')

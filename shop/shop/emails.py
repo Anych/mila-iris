@@ -7,14 +7,15 @@ from django.utils.http import urlsafe_base64_encode
 
 class Emails:
     """Email class for sending emails."""
-    def __init__(self, order=None, user=None, email=None, question=None, product_url=None, pk=None, forgot=False):
+    def __init__(self, order=None, user=None, email=None, question=None,
+                 product_url=None, pk=None, command=None):
         self.order = order
         self.user = user
         self.email = email
         self.question = question
         self.product_url = product_url
         self.pk = pk
-        self.forgot = forgot
+        self.command = command
         self.mail_subject = None
         self.message = None
         self.redirect_to_function()
@@ -29,9 +30,9 @@ class Emails:
                 self.order_email()
 
             elif self.pk is not None:
-                if self.forgot:
+                if self.command == 'forgot':
                     self.forgot_password()
-                else:
+                elif self.command == 'confirm' or self.command == 'register':
                     self.confirm_email()
 
         else:
@@ -68,6 +69,7 @@ class Emails:
             'uid': urlsafe_base64_encode(force_bytes(self.pk)),
             'token': default_token_generator.make_token(self.user),
             'email': self.email,
+            'command': self.command,
         })
         self.send_email_to_user()
 

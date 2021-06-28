@@ -40,7 +40,7 @@ class CheckOutView(LoginRequiredMixin, CartMixin, CreateView):
             if self.request_user.confirm_email:
                 self.calculate_total()
             else:
-                return redirect('/accounts/confirm_email/?command=make_order')
+                return redirect('/accounts/confirm-email/')
         except ObjectDoesNotExist:
             pass
         context = {
