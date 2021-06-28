@@ -41,32 +41,7 @@
                 <!--End Desktop Menu-->
 
                 <div class="col-4 col-sm-4 col-md-4 col-lg-2 align-self-center icons-col text-right">
-                    <!--Search-->
-                    <div class="site-search iconset">
-                        <i class="icon anm anm-search-l"></i>
-                    </div>
-                    <div class="search-drawer">
-                    	<div class="container">
-                            <span class="closeSearch anm anm-times-l"></span>
-                            <h3 class="title">Что Вы ищите?</h3>
-                            <div class="block block-search">
-                                <div class="block block-content">
-                                    <form class="form minisearch" id="header-search" action="" method="GET">
-                                        <label for="search" class="label"><span>Search</span></label>
-                                        <div class="control">
-                                            <div class="searchField">
-                                                <div class="input-box">
-                                                    <input id="search" type="text" name="keyword" placeholder="Поиск продуктов, брендов ..." class="input-text">
-                                                    <button type="submit" title="Поиск" class="action search"><i class="icon anm anm-search-l"></i></button>
-                                                </div>
-                                            </div>
-                                      </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--End Search-->
+
                     <!--Setting Dropdown-->
                     {% if user.id is None %}
                     <div class="setting-link iconset">
@@ -109,10 +84,25 @@
 		<div class="closemobileMenu"><i class="icon anm anm-times-l pull-right"></i> Закрыть</div>
         <ul id="MobileNav" class="mobile-nav">
         	<li class="lvl1 parent megamenu"><a href="{% url 'home' %}">Главная</a></li>
-                <li class="lvl1 parent megamenu"><a href="{{ category.get_absolute_url }}">Одежда<i class="anm anm-plus-l"></i></a></li>
-                <li class="lvl1 parent megamenu"><a href="{{ category.get_absolute_url }}">Обувь<i class="anm anm-plus-l"></i></a></li>
-                <li class="lvl1 parent megamenu"><a href="{{ category.get_absolute_url }}">Акссессуары<i class="anm anm-plus-l"></i></a></li>
-            <li><a href="">Скидки</a></li>
+                <li class="lvl1 parent megamenu"><a href="{% url 'category' category_slug='clothes' %}">Одежда<i class="anm anm-plus-l"></i></a>
+                    <ul style="display: none;">
+                        {% for cat in cloth_categories %}
+                            <li><a href="{{ cat.get_subcategory_url }}" class="site-nav">{{ cat.name }}</a></li>
+                        {% endfor %}
+                    </ul></li>
+                <li class="lvl1 parent megamenu"><a href="{% url 'category' category_slug='shoes' %}">Обувь<i class="anm anm-plus-l"></i></a>
+                    <ul style="display: none;">
+                        {% for cat in shoes_categories %}
+                            <li><a href="{{ cat.get_subcategory_url }}" class="site-nav">{{ cat.name }}</a></li>
+                        {% endfor %}
+                    </ul></li>
+                <li class="lvl1 parent megamenu"><a href="{% url 'category' category_slug='accessories' %}">Акссессуары<i class="anm anm-plus-l"></i></a>
+                    <ul style="display: none;">
+                        {% for cat in accessories_categories %}
+                            <li><a href="{{ cat.get_subcategory_url }}" class="site-nav">{{ cat.name }}</a></li>
+                        {% endfor %}
+                    </ul></li>
+            <li><a href="{% url 'sales_main' %}">Скидки</a></li>
       </ul>
 	</div>
 	<!--End Mobile Menu-->
