@@ -6,12 +6,13 @@ from smartfields import fields
 
 class MyAccountManager(BaseUserManager):
     """Account manager."""
-    def create_user(self, first_name, last_name, email, password=None):
+    def create_user(self, first_name, last_name, email, username, password=None):
         """Creates and saves a new user."""
         if not email:
             raise ValueError('Введите e-mail')
         user = self.model(
             email=self.normalize_email(email),
+            username=username,
             first_name=first_name,
             last_name=last_name,
             confirm_email=False,
@@ -21,10 +22,11 @@ class MyAccountManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, first_name, last_name, email, password):
+    def create_superuser(self, first_name, last_name, email, username, password):
         """Creates and saves a new super user."""
         user = self.create_user(
             email=self.normalize_email(email),
+            username=username,
             first_name=first_name,
             last_name=last_name,
             password=password,
@@ -46,8 +48,9 @@ class Account(AbstractBaseUser):
 
     first_name = models.CharField(max_length=255, null=True, verbose_name='Фамилия')
     last_name = models.CharField(max_length=255, null=True, verbose_name='Имя')
-    email = models.CharField(max_length=255, null=True, verbose_name='Почта')
+    email = models.CharField(max_length=255, blank=True,  unique=True, null=True, verbose_name='Почта')
     phone_number = models.CharField(max_length=255, null=True, verbose_name='Номер телефона')
+    username = models.CharField(max_length=50, unique=True, null=True, verbose_name='Имя пользователя')
 
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now_add=True)
@@ -60,7 +63,7 @@ class Account(AbstractBaseUser):
 
     USERNAME_FIELD = 'email'
 
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
     objects = MyAccountManager()
 

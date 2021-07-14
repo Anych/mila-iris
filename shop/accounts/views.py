@@ -108,7 +108,7 @@ class ConfirmEmailView(View):
     def get(self, request, *args, **kwargs):
         """Render page for users who already have or haven't an email."""
         if self.request_user.email:
-            Emails(user=self.request_user, pk=self.request_user.pk, email=self.request_user.email)
+            Emails(user=self.request_user, pk=self.request_user.pk, email=self.request_user.email, command='confirm')
             return render(request, 'accounts/confirm_email.html')
         else:
             return render(request, 'accounts/confirm_email.html', context={'user': self.request_user})

@@ -84,10 +84,10 @@ DATABASES = {
     }
 }
 
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.AllowAllUsersModelBackend'
-]
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.AllowAllUsersModelBackend']
+
 AUTH_USER_MODEL = 'accounts.Account'
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -143,8 +143,4 @@ SITE_ID = config('SITE_ID', cast=int)
 
 LOGIN_REDIRECT_URL = 'category_main'
 
-ACCOUNT_EMAIL_REQUIRED = False
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_EMAIL_VERIFICATION = None
-ACCOUNT_UNIQUE_EMAIL = False
 ACCOUNT_FORMS = {'signup': 'accounts.forms.RegistrationForm'}
