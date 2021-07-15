@@ -48,7 +48,7 @@ class Account(AbstractBaseUser):
 
     first_name = models.CharField(max_length=255, null=True, verbose_name='Фамилия')
     last_name = models.CharField(max_length=255, null=True, verbose_name='Имя')
-    email = models.CharField(max_length=255, blank=True,  unique=True, null=True, verbose_name='Почта')
+    email = models.CharField(max_length=255, blank=True, null=True, verbose_name='Почта')
     phone_number = models.CharField(max_length=255, null=True, verbose_name='Номер телефона')
     username = models.CharField(max_length=50, unique=True, null=True, verbose_name='Имя пользователя')
 
